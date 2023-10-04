@@ -1,0 +1,106 @@
+@import '@picocss/pico/css/pico.min.css';
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    padding: 0 var(--spacing);
+    border: var(--border-width) solid var(--muted-border-color);
+}
+
+nav ul:last-of-type {
+    margin: 0;
+}
+
+nav li {
+    padding: calc(var(--spacing) * 0.6) var(--nav-element-spacing-horizontal);
+}
+
+nav svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.collectionNav svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.page {
+    flex-grow: 1;
+}
+
+button {
+    padding: 0.25rem 0.5rem;
+}
+
+[role="button"] svg, button svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.toast {
+    position: fixed;
+    z-index: 999;
+    min-width: 3rem;
+    min-height: 3rem;
+    bottom: 1rem;
+    right: 2rem;
+    background-color: var(--code-background-color);
+    border: 2px solid var(--muted-color);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.toast svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.warning svg {
+    color: orange;
+}
+
+.contain-scroll {
+    overflow: hidden;
+}
+
+.editorInput {
+    padding: calc(var(--spacing) * 0.5) var(--spacing);
+    border-bottom: var(--border-width) solid var(--muted-border-color);
+}
+
+/** Extend Milkdown styles **/
+.editor {
+    border: 1px solid var(--form-element-border-color);
+    border-radius: 0.25rem;
+    margin-top: calc(var(--spacing) * 0.25);
+    margin-bottom: var(--spacing);
+    padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
+    max-height: 10rem;
+    overflow-y: auto;
+}
+
+.editor h1, .editor h2, .editor h3, .editor h4, .editor h5, .editor h6, .editor p {
+    margin: 0;
+    /* font-size: calc(var(--font-size) * 0.8); */
+}
+
+.ProseMirror-focused {
+    outline: none;
+    border: var(--border-width) solid var(--form-element-active-border-color);
+    box-shadow: 0 0 0 var(--outline-width) var(--form-element-focus-color);
+}
+
+@media (min-width: 720px) {
+    body {
+        height: 100vh;
+    }
+}

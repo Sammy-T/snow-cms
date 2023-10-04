@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Vite + Svelte</title>
+    
+    <!-- 
+      For some reason PouchDB requires explicitly setting 'global'
+      when building with Hugo pipes.
+      @see https://github.com/pouchdb/pouchdb/issues/8516#issuecomment-1236744553
+     -->
+    <script>
+      if(!window.global) window.global = window;
+    </script>
+
+    <link rel="stylesheet" href="/src/main.css">
+  </head>
+  <body>
+    <slot name="App"></slot>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
