@@ -9,21 +9,21 @@
     export let value = formatDateTimeValue(type, new Date());
     export let required = true;
 
-    $: updateDraft(value);
-
-    function updateDraft(updatedValue) {
+    function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the store object
 
-        draft[name] = updatedValue;
+        draft[name] = value;
 
         $draftEntry = draft; // Update the store
     }
 
     async function init() {
-        if(!$editingEntry) return;
+        if($editingEntry) {
+            const fields = $editingEntry.fields;
+            value = formatDateTimeValue(type, new Date(fields[name]));
+        }
 
-        const fields = $editingEntry.fields;
-        value = formatDateTimeValue(type, new Date(fields[name]));
+        updateDraft();
     }
 
     onMount(() => {
@@ -35,10 +35,10 @@
     {label}
 
     {#if type === 'time'}
-        <input type="time" id={name} {name} bind:value {required} />
+        <input type="time" id={name} {name} bind:value on:input={updateDraft} {required} />
     {:else if type === 'date'}
-        <input type="date" id={name} {name} bind:value {required} />
+        <input type="date" id={name} {name} bind:value on:input={updateDraft} {required} />
     {:else}
-        <input type="datetime-local" id={name} {name} bind:value {required} />
+        <input type="datetime-local" id={name} {name} bind:value on:input={updateDraft} {required} />
     {/if}
 </label>

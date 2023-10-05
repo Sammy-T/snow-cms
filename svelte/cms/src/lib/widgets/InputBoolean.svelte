@@ -7,25 +7,25 @@
     export let checked = false;
     export let required = true;
 
-    $: updateDraft(checked);
-
-    function updateDraft(updatedValue) {
+    function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the object
 
         // Update the draft with the label or the updated value
-        if(!updatedValue) {
-            draft[name] = $selectedCollection?.fields.find(f => f.name === name).label;
+        if(checked === null) {
+            draft[name] = $selectedCollection?.fields.find(f => f.name === name).default;
         } else {
-            draft[name] = updatedValue;
+            draft[name] = checked;
         }
 
         $draftEntry = draft; // Update the store
     }
 
     async function init() {
-        if(!$editingEntry) return;
+        if($editingEntry) {
+            checked = $editingEntry.fields[name];
+        }
 
-        checked = $editingEntry.fields[name];
+        updateDraft();
     }
 
     onMount(() => {
@@ -37,7 +37,8 @@
     {label}
     
     <!-- Attach the checkbox to the 'ignore' form to prevent duplicate data on the 'entry' form -->
-    <input type="checkbox" role="switch" id={name} {name} form="ignore" bind:checked {required} />
+    <input type="checkbox" role="switch" id={name} {name} form="ignore" bind:checked 
+        on:change={updateDraft} {required} />
     
     <!-- 
         Bind the checkbox value to a hidden input since the checkbox value isn't included in the form data when not checked. 
