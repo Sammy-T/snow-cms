@@ -1,6 +1,6 @@
 <script>
     import ArrowLeft from '$assets/arrow-left.svg?raw';
-    import { selectedCollection, editingEntry, draftEntry } from '$stores';
+    import { selectedCollection, editingEntry, draftEntry, backend } from '$stores';
     import { getContext, onMount } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
@@ -11,13 +11,13 @@
 
     $: onDraft([$editingEntry, $draftEntry]);
 
-    function onDraft(placeholder) {
+    async function onDraft(placeholder) {
         if(!entryForm) return;
 
-        draftChanged = !areEntriesEqual();
+        draftChanged = !(await areEntriesEqual());
     }
 
-    function areEntriesEqual() {
+    async function areEntriesEqual() {
         if(!$editingEntry) return false;
         
         const formData = new FormData(entryForm);
@@ -25,8 +25,8 @@
         for(const [key, value] of formData) {
             const field = $selectedCollection.fields.find(f => f.name === key);
             
-            const entryValueRaw = $editingEntry?.fields[field.name] || $editingEntry[field.name];
-            const parsedValueRaw = parseFormEntry(field, value);
+            const entryValueRaw = $editingEntry?.fields[field.name] ?? $editingEntry[field.name];
+            const parsedValueRaw = await parseFormEntry(field, value, $backend);
             
             let entryValue;
             let parsedValue;
