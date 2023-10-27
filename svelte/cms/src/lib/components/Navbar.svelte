@@ -1,7 +1,8 @@
 <script>
     import textBoxMult from '$assets/text-box-multiple.svg?raw';
     import folderMultImage from '$assets/folder-multipe-image.svg?raw';
-    import logout from '$assets/logout.svg?raw';
+    import logoutIc from '$assets/logout.svg?raw';
+    import { cmsActions } from '$lib/stores';
     import { createEventDispatcher } from 'svelte';
 
     const dispatch = createEventDispatcher();
@@ -13,6 +14,12 @@
         // Clear focus from the selected link
         // so the tooltip doesn't remain visible.
         event.currentTarget.blur();
+    }
+
+    function logout() {
+        // If there's a custom logout function defined, use it.
+        // Otherwise, fall back to back navigation.
+        ($cmsActions?.logout) ? $cmsActions.logout() : history.back();
     }
 </script>
 
@@ -33,10 +40,10 @@
     </ul>
 
     <ul>
-        <!-- svelte-ignore a11y-invalid-attribute -->
         <li>
-            <a href="#" class="secondary" data-tooltip="Logout"  data-placement="bottom">
-                {@html logout}
+            <a href="##logout" class="secondary" data-tooltip="Logout"  data-placement="bottom"
+                on:click|preventDefault={logout}>
+                {@html logoutIc}
             </a>
         </li>
     </ul>

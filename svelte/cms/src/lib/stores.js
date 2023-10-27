@@ -1,4 +1,4 @@
-import { writable, readable } from 'svelte/store';
+import { writable, readable, derived } from 'svelte/store';
 import yaml from 'js-yaml';
 
 export const selectedCollection = writable();
@@ -15,7 +15,19 @@ export const config = readable(null, set => {
     return () => {};
 });
 
+export const cmsActions = derived(config, ($config, set) => {
+    const file = $config?.custom_actions;
+    if(!file) return null;
+
+    loadCmsActions(file)
+        .then(set)
+        .catch(error => console.error('Failed to load cms actions.', error));
+
+    return () => {};
+});
+
 async function loadConfig() {
+    //// TODO: Why is this path different?
     const configUrl = new URL('../cms-config/config.yml', import.meta.url).href;
 
     const res = await fetch(configUrl);
@@ -24,4 +36,13 @@ async function loadConfig() {
     const loaded = yaml.load(await res.text());
 
     return loaded;
+}
+
+async function loadCmsActions(file) {
+    const path = `../../cms-config/${file}`;
+    const url = new URL(path, import.meta.url).href;
+
+    const customActions = await import(url);
+
+    return customActions.default;
 }
