@@ -42,6 +42,22 @@
                     entryValue = entryValueRaw.trim().replaceAll('\r\n', '\n');
                     parsedValue = parsedValueRaw.trim().replaceAll('\r\n', '\n');
                     break;
+
+                case 'hidden':
+                    switch(field.type) {
+                        case 'datetime-local':
+                        case 'date':
+                        case 'time':
+                            entryValue = new Date(entryValueRaw).getTime();
+                            parsedValue = parsedValueRaw.getTime();
+                            break;
+                        
+                        default:
+                            entryValue = entryValueRaw;
+                            parsedValue = parsedValueRaw;
+                            break;
+                    }
+                    break;
                 
                 default:
                     entryValue = entryValueRaw;

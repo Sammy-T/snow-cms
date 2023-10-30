@@ -19,7 +19,7 @@ export function formatDateTimeValue(type, d) {
 
     switch(type) {
         case 'datetime-local':
-            formatted = datetime.format('YYYY-MM-DDThh:mm');
+            formatted = datetime.format('YYYY-MM-DDTHH:mm');
             break;
         
         case 'date':
@@ -27,7 +27,7 @@ export function formatDateTimeValue(type, d) {
             break;
         
         case 'time':
-            formatted = datetime.format('hh:mm');
+            formatted = datetime.format('HH:mm');
             break;
     }
 
@@ -130,6 +130,30 @@ export async function parseFormEntry(field, value, backend) {
         
         case 'boolean':
             entryValue = value === 'true';
+            break;
+
+        case 'hidden':
+            switch(field.type) {
+                case 'datetime-local':
+                    entryValue = new Date(dayjs(value.toString(), 'YYYY-MM-DDThh:mm').toISOString());
+                    break;
+
+                case 'time':
+                    entryValue = new Date(dayjs(value.toString(), 'hh:mm').toISOString());
+                    break;
+                
+                case 'date':
+                    entryValue = new Date(dayjs(value.toString(), 'YYYY-MM-DD').toISOString());
+                    break;
+
+                case 'boolean':
+                    entryValue = value === 'true';
+                    break;
+
+                default:
+                    entryValue = value;
+                    break;
+            }
             break;
         
         default:

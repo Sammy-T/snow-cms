@@ -4,6 +4,7 @@
     import InputDateTime from '$lib/widgets/InputDateTime.svelte';
     import InputText from '$lib/widgets/InputText.svelte';
     import InputMarkdown from '$lib/widgets/InputMarkdown.svelte';
+    import InputHidden from '$lib/widgets/InputHidden.svelte';
     import Preview from '$lib/components/Preview.svelte';
     import Pending from '$lib/toasts/Pending.svelte';
     import Warning from '$lib/toasts/Warning.svelte';
@@ -20,7 +21,8 @@
         'text': InputText,
         'datetime': InputDateTime,
         'boolean': InputBoolean,
-        'markdown': InputMarkdown
+        'markdown': InputMarkdown,
+        'hidden': InputHidden
     };
 
     async function onEntrySubmit(event) {
