@@ -1,5 +1,5 @@
 <script>
-    import { editingEntry } from '$stores';
+    import { draftEntry, editingEntry } from '$stores';
     import { getContext } from 'svelte';
     import dayjs from 'dayjs';
 
@@ -19,6 +19,7 @@
     }
 
     function onItemClick(event) {
+        $draftEntry = {};
         $editingEntry = entry;
     }
 </script>
