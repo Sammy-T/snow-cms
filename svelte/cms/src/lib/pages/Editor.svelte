@@ -8,13 +8,15 @@
     import Preview from '$lib/components/Preview.svelte';
     import Pending from '$lib/toasts/Pending.svelte';
     import Warning from '$lib/toasts/Warning.svelte';
-    import { selectedCollection, editingEntry, backend } from '$stores';
+    import { selectedCollection, editingEntry, backend, cmsActions } from '$stores';
     import { writable } from 'svelte/store';
     import { setContext } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
     const submitted = writable();
     setContext('submitted', submitted);
+
+    let saveAction;
 
     const editorInputs = {
         'string': InputText,
@@ -36,7 +38,7 @@
             try {
                 entryData.fields[key] = await parseFormEntry(field, value, $backend);
             } catch(error) {
-                console.error('Error parsing form entry', error);
+                console.error('Error parsing form entry.', error);
             }
         }
 
@@ -44,8 +46,14 @@
 
         try {
             $editingEntry = await $submitted;
+            
+            // If there's a custom 'on save' action defined, call it on a successful save.
+            if($cmsActions.onSave) {
+                saveAction = $cmsActions.onSave($editingEntry);
+                await saveAction;
+            }
         } catch(error) {
-            console.warn('File not saved.', error);
+            console.warn('Issue saving post.', error);
         }
     }
 </script>
@@ -88,6 +96,10 @@
     <Pending msg="Saving" />
 {:catch error}
     <Warning msg="Unable to save" details={error.message} />
+{/await}
+
+{#await saveAction catch error}
+    <Warning msg="'On save' event action failed" details={error.message} />
 {/await}
 
 <style>
