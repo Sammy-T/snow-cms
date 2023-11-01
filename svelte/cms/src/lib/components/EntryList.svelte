@@ -4,7 +4,7 @@
     import Warning from '$lib/toasts/Warning.svelte';
     import trashCan from '$assets/trash-can-outline.svg?raw';
     import pencil from '$assets/pencil.svg?raw';
-    import { selectedCollection, editingEntry, draftEntry, backend } from '$stores';
+    import { selectedCollection, editingEntry, draftEntry, backend, cmsActions } from '$stores';
     import { writable } from 'svelte/store';
     import { setContext } from 'svelte';
 
@@ -12,6 +12,7 @@
     setContext('selectedEntries', selectedEntries);
     
     let getFilesResp;
+    let deleteAction;
     let entries = [];
     
     $: updateEntries([$backend, $selectedCollection]);
@@ -34,6 +35,12 @@
     async function deleteFiles() {
         try{
             await $backend.deleteFiles($selectedEntries);
+            
+            if($cmsActions.onDelete) {
+                deleteAction = $cmsActions.onDelete($selectedEntries);
+                await deleteAction;
+            }
+
             $selectedEntries = [];
             updateEntries();
         } catch(error) {
@@ -74,6 +81,10 @@
         <Pending msg="Loading" />
     {:catch error}
         <Warning msg="Error getting entries" details={error.message} />
+    {/await}
+
+    {#await deleteAction catch error}
+        <Warning msg="'On delete' event action failed" details={error.message} />
     {/await}
 </main>
 
