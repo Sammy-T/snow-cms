@@ -11,7 +11,7 @@
         const draft = { ...$draftEntry }; // Copy the object
 
         // Update the draft with the label or the updated value
-        if(checked === null) {
+        if(checked == null) {
             draft[name] = $selectedCollection?.fields.find(f => f.name === name).default;
         } else {
             draft[name] = checked;
