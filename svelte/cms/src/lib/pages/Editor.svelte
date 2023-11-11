@@ -103,6 +103,10 @@
 {/await}
 
 <style>
+    .page {
+        overflow: hidden;
+    }
+
     section {
         border: var(--border-width) solid var(--muted-border-color);
         margin: 0;
@@ -116,6 +120,10 @@
 
     form {
         margin: 0;
+    }
+
+    #inputArea {
+        overflow-y: auto;
     }
 
     #previewArea {
