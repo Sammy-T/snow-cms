@@ -41,7 +41,7 @@
 
     <ul>
         <li>
-            <a href="##logout" class="secondary" data-tooltip="Logout"  data-placement="bottom"
+            <a href="##exit" class="secondary" data-tooltip="Exit"  data-placement="bottom"
                 on:click|preventDefault={logout}>
                 {@html logoutIc}
             </a>
