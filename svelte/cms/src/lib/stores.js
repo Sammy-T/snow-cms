@@ -27,12 +27,7 @@ export const cmsActions = derived(config, ($config, set) => {
 });
 
 async function loadConfig() {
-    /**
-     * I'm not sure why this path is different (`../` instead of `../../`)
-     * but I'm guessing Vite handles it differently
-     * because the url string argument is static instead of built at runtime.
-     */
-    const configUrl = new URL('../cms-config/config.yml', import.meta.url).href;
+    const configUrl = new URL('../../cms-config/config.yml', import.meta.url).href;
 
     const res = await fetch(configUrl);
     if(!res.ok) throw new Error(`Unable to fetch file ${configUrl}`);
