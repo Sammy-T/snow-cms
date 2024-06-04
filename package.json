@@ -3,10 +3,33 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite -c svelte/cms/vite.config.js",
+    "build": "vite build -c svelte/cms/vite.config.js"
   },
   "keywords": [],
   "author": "Sammy-T",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@picocss/pico": "^2.0.6"
+  },
+  "devDependencies": {
+    "@milkdown/core": "^7.3.6",
+    "@milkdown/ctx": "^7.3.6",
+    "@milkdown/plugin-listener": "^7.3.6",
+    "@milkdown/preset-commonmark": "^7.3.6",
+    "@milkdown/prose": "^7.3.6",
+    "@milkdown/theme-nord": "^7.3.6",
+    "@milkdown/transformer": "^7.3.6",
+    "@milkdown/utils": "^7.3.6",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "browser-fs-access": "^0.35.0",
+    "dayjs": "^1.11.11",
+    "js-yaml": "^4.1.0",
+    "pouchdb-browser": "^8.0.1",
+    "pouchdb-find": "^8.0.1",
+    "svelte": "^4.2.17",
+    "vite": "^5.2.12"
+  }
 }
