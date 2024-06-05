@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "dev": "run-p watch:cms local",
     "watch:cms": "vite build -w -c svelte/cms/vite.config.js",
