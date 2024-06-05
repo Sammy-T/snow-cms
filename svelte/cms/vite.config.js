@@ -16,7 +16,7 @@ export default defineConfig({
         }
     },
     build: {
-        outDir: '../../site/static/cms/',
+        outDir: '../../dist/cms/',
         emptyOutDir: true,
         rollupOptions: {
             output: {
