@@ -5,18 +5,18 @@ import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
     base: '',
-    root: 'svelte/cms',
+    root: 'cms',
     plugins: [svelte()],
     resolve: {
         alias: {
-            $assets: resolve('./svelte/cms/src/assets'),
-            $lib: resolve('./svelte/cms/src/lib'),
-            $stores: resolve('./svelte/cms/src/lib/stores'),
-            $util: resolve('./svelte/cms/src/lib/util'),
+            $assets: resolve('./cms/src/assets'),
+            $lib: resolve('./cms/src/lib'),
+            $stores: resolve('./cms/src/lib/stores'),
+            $util: resolve('./cms/src/lib/util'),
         }
     },
     build: {
-        outDir: '../../dist/cms/',
+        outDir: '../dist/cms',
         emptyOutDir: true,
         rollupOptions: {
             output: {

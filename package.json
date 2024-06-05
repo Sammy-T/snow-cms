@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "dev": "run-p watch:cms local",
-    "watch:cms": "vite build -w -c svelte/cms/vite.config.js",
+    "watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js",
     "local": "vite dist",
-    "build": "vite build -c svelte/cms/vite.config.js",
+    "build": "vite build -c cms/vite.config.js",
     "prepublish": "npm run build"
   },
   "keywords": [],
