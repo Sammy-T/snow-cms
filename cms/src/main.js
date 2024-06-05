@@ -1,18 +1,10 @@
-/**
- * @param {HTMLSlotElement} slot
- */
-async function addComponent(slot) {
-    try {
-        const module = await import(`./lib/${slot.name}.svelte`);
-        const Component = module.default;
+import './main.css';
+import App from './lib/App.svelte';
 
-        new Component({
-            target: slot
-        });
-    } catch(err) {
-        console.error(err);
-    }
-}
+//// TODO: Set `window.global` here instead of from the html?
 
-const slots = document.querySelectorAll('slot');
-slots.forEach(slot => addComponent(slot));
+const app = new App({
+    target: document.getElementById('app'),
+});
+  
+export default app;
