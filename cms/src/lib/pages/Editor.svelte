@@ -48,7 +48,7 @@
             $editingEntry = await $submitted;
             
             // If there's a custom 'on save' action defined, call it on a successful save.
-            if($cmsActions.onSave) {
+            if($cmsActions?.onSave) {
                 saveAction = $cmsActions.onSave($editingEntry);
                 await saveAction;
             }

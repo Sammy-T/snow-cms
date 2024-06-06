@@ -36,7 +36,7 @@
         try{
             await $backend.deleteFiles($selectedEntries);
             
-            if($cmsActions.onDelete) {
+            if($cmsActions?.onDelete) {
                 deleteAction = $cmsActions.onDelete($selectedEntries);
                 await deleteAction;
             }

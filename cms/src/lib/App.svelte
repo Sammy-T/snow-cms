@@ -13,7 +13,7 @@
 
     let currentPage;
 
-    $: if(!$backend && !$config?.local_backend && $config?.backend.name === 'custom') {
+    $: if(!$backend && !$config?.local_backend && $config?.backend?.name === 'custom') {
         loadCustomBackend(config, backend);
     }
 
