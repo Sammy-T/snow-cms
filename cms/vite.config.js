@@ -18,6 +18,7 @@ export default defineConfig({
     build: {
         outDir: '../dist/cms',
         emptyOutDir: true,
+        modulePreload: false,
         rollupOptions: {
             output: {
                 entryFileNames: 'assets/[name].js',
