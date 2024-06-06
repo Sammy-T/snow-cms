@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <title>CMS</title>
-    
-    <!-- 
-      For some reason PouchDB requires explicitly setting 'global'
-      when building with Hugo pipes.
-      @see https://github.com/pouchdb/pouchdb/issues/8516#issuecomment-1236744553
-     -->
-    <script>
-      if(!window.global) window.global = window;
-    </script>
   </head>
   <body>
     <slot id="app"></slot>
