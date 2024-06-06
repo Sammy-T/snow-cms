@@ -27,7 +27,7 @@ export const cmsActions = derived(config, ($config, set) => {
 });
 
 async function loadConfig() {
-    const configUrl = new URL('../../cms-config/config.yml', import.meta.url).href;
+    const configUrl = new URL('../../cms-config/config.yml', window.location.href).href;
 
     const res = await fetch(configUrl);
     if(!res.ok) throw new Error(`Unable to fetch file ${configUrl}`);
@@ -39,7 +39,7 @@ async function loadConfig() {
 
 async function loadCmsActions(file) {
     const path = `../../cms-config/${file}`;
-    const url = new URL(path, import.meta.url).href;
+    const url = new URL(path, window.location.href).href;
 
     const customActions = await import(url);
 

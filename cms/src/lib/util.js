@@ -48,7 +48,7 @@ export function getStyles(config, name) {
     
     files.forEach((path) => {
         const filepath = `${configPath}${path}`;
-        urls.push(new URL(filepath, import.meta.url).href);
+        urls.push(new URL(filepath, window.location.href).href);
     });
 
     return urls.map(url => `<link rel="stylesheet" href="${url}">`).join('\n');
@@ -64,7 +64,7 @@ export async function loadTemplate(config, name) {
     const template = config?.previews.templates.find(template => template.name === name)?.template;
     if(!template) return;
 
-    const url = new URL(`${configPath}${template}`, import.meta.url).href;
+    const url = new URL(`${configPath}${template}`, window.location.href).href;
 
     try {
         const res = await fetch(url);
@@ -228,7 +228,7 @@ export async function loadCustomBackend(configStore, backendStore) {
     const { file } = get(configStore).backend;
     if(!file) return;
 
-    const url = new URL(`${configPath}${file}`, import.meta.url).href;
+    const url = new URL(`${configPath}${file}`, window.location.href).href;
 
     const customBackend = await import(url);
 
