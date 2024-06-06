@@ -20,6 +20,9 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             output: {
+                entryFileNames: 'assets/[name].js',
+                assetFileNames: 'assets/[name][extname]',
+                chunkFileNames: 'assets/[name].js',
                 manualChunks: function manualChunks(id) {
                     if (id.includes('node_modules')) {
                         let name = 'vendor';
