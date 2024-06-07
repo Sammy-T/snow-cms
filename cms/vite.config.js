@@ -28,9 +28,9 @@ export default defineConfig({
         // sourcemap: true,
         rollupOptions: {
             output: {
-                entryFileNames: 'assets/[name].js',
-                assetFileNames: 'assets/[name][extname]',
-                chunkFileNames: 'assets/[name].js',
+                entryFileNames: '[name].js',
+                assetFileNames: '[name][extname]',
+                chunkFileNames: '[name].js',
                 manualChunks: function manualChunks(id) {
                     if (id.includes('node_modules')) {
                         let name = 'vendor';

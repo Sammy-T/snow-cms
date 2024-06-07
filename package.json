@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "files": [
-    "dist/"
+    "dist/cms/**.js",
+    "dist/cms/**.css"
   ],
   "scripts": {
     "dev": "run-p watch:cms local",
