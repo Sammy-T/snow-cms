@@ -9,11 +9,11 @@
     "dist/**.css"
   ],
   "scripts": {
-    "dev": "run-p watch:cms serve:site",
-    "watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
+    "dev": "run-p build:watch:cms serve:site",
     "serve:site": "vite dev-site",
     "build": "vite build -c cms/vite.config.js",
-    "prepublish": "npm run build"
+    "build:watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "Sammy-T",
