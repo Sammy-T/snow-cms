@@ -5,13 +5,13 @@
   "main": "index.js",
   "type": "module",
   "files": [
-    "dist/cms/**.js",
-    "dist/cms/**.css"
+    "dist/**.js",
+    "dist/**.css"
   ],
   "scripts": {
-    "dev": "run-p watch:cms local",
-    "watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js",
-    "local": "vite dist",
+    "dev": "run-p watch:cms serve:site",
+    "watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
+    "serve:site": "vite dev-site",
     "build": "vite build -c cms/vite.config.js",
     "prepublish": "npm run build"
   },

@@ -22,7 +22,7 @@ export default defineConfig({
         }
     },
     build: {
-        outDir: '../dist/cms',
+        outDir: '../dist',
         emptyOutDir: true,
         modulePreload: false,
         // sourcemap: true,

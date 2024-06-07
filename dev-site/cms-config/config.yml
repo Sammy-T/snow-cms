@@ -1,0 +1,28 @@
+backend:
+  name: custom
+  branch: master
+  file: 'backend/none.js' # Relative to the /cms-config path
+local_backend: true
+custom_actions: 'cms-actions.js' # Relative to the /cms-config path
+repo_folder: pop-cms # The root folder of the repository
+media_folder: 'dev-site/img/uploads' # The repo's media folder
+public_folder: '/img/uploads' # The site's media path
+collections:
+  - name: 'news' # Used in routes, e.g., /admin/collections/blog
+    label: 'News' # Used in the UI
+    folder: 'dev-site/content' # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    slug: '{{year}}{{month}}{{day}}-{{slug}}' # Filename template, e.g., YYYY-MM-DD-title
+    extension: 'md'
+    fields: # The fields for each document, usually in front matter
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime', type: 'date',
+          date_format: 'MM.DD.YYYY', time_format: 'HH:mm', datetime_format: 'MM.DD.YYYY HH:mm' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: true, required: false }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+previews: # Filenames relative to the /cms-config path
+  default: main # Default preview name, can also be specifed as 'preview' on each collection
+  templates:
+    - { name: 'main', template: 'preview-template.html' }
+  styles: # Styles will load in listed order
+    - { name: 'main', files: ['pico.min.css', 'main.css'] }
