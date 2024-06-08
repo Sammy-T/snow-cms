@@ -2,7 +2,8 @@ import { config, backend } from '$stores';
 import { get } from 'svelte/store';
 import { createFilename, parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
-import PouchDB from 'pouchdb-browser';
+import PouchDB from 'pouchdb-core';
+import PouchDBIdb from 'pouchdb-adapter-idb';
 import PouchDBFind from 'pouchdb-find';
 import yaml from 'js-yaml';
 
@@ -19,9 +20,10 @@ function init() {
     }
 
     // Set up PouchDB
+    PouchDB.plugin(PouchDBIdb);
     PouchDB.plugin(PouchDBFind);
 
-    db = new PouchDB(`${repoFolder}-local`);
+    db = new PouchDB(`${repoFolder}-local`, { adapter: 'idb' });
 
     /**
      * Set up the indices.
