@@ -3,10 +3,12 @@ backend:
   branch: master
   file: 'backend/none.js' # Relative to the /cms-config path
 local_backend: true # Set to 'true' to override the backend with the local backend
+
 custom_actions: 'cms-actions.js' # Relative to the /cms-config path
 repo_folder: pop-cms # The root folder of the repository
 media_folder: 'dev-site/img/uploads' # The repo's media folder
 public_folder: '/img/uploads' # The site's media path (Media location when served online or via dev server)
+
 collections:
   - name: 'news' # Used in routes, e.g., /admin/collections/blog
     label: 'News' # Used in the UI
@@ -20,6 +22,7 @@ collections:
           date_format: 'MM.DD.YYYY', time_format: 'HH:mm', datetime_format: 'MM.DD.YYYY HH:mm' }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: true, required: false }
       - { label: 'Body', name: 'body', widget: 'markdown' }
+
 previews: # Filenames in this section are relative to the /cms-config path
   default: main # Default preview name, can also be specifed as 'preview' on each collection
   templates:

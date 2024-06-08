@@ -6,14 +6,22 @@ import PouchDB from 'pouchdb-browser';
 import PouchDBFind from 'pouchdb-find';
 import yaml from 'js-yaml';
 
+let repoFolder;
 let db;
 let rootDirHandle;
 
 function init() {
+    repoFolder = get(config).repo_folder;
+
+    if(!repoFolder) {
+        console.error(`Missing 'repo_folder' config`);
+        return;
+    }
+
     // Set up PouchDB
     PouchDB.plugin(PouchDBFind);
 
-    db = new PouchDB('member-demo-local');
+    db = new PouchDB(`${repoFolder}-local`);
 
     /**
      * Set up the indices.
@@ -147,6 +155,8 @@ function getContents(text) {
  * within the configured collection folder(s) from the selected directory.
  */
 async function selectDirectory() {
+    if(!repoFolder) return;
+
     const collectionRegexes = {};
 
     const collections = get(config).collections;
@@ -184,7 +194,7 @@ async function selectDirectory() {
         // Filter out the files not contained in the collection directories
         // or that have filenames we're ignoring.
         files.forEach((file) => {
-            if(!rootDirHandle && file.directoryHandle?.name === 'member-demo') { //// TODO:
+            if(!rootDirHandle && file.directoryHandle?.name === repoFolder) {
                 rootDirHandle = file.directoryHandle;
             }
 
