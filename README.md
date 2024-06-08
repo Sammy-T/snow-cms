@@ -89,8 +89,6 @@ See [dev-site/cms-config](/dev-site/cms-config) for example config files.
 npm install
 ```
 
-**Note:** Development currently doesn't support using pnpm as it breaks the 'browser-fs-access' dependency for unknown reasons. pnpm should still work for projects that import this CMS though.
-
 ### Run the dev server:
 
 ```bash
