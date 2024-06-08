@@ -4,10 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <!-- The 'styles' replacement tag must be present to apply styles to the editor preview. -->
         {{styles}}
     </head>
 
     <body>
+        <!-- 
+            Add replacement tags with the name of the collection field you want to display 
+            to each html element they should appear in.
+        -->
         <main class="container">
             <h5 class="post-date">{{date}}</h5>
             <h1 class="post-title">{{title}}</h1>

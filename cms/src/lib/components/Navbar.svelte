@@ -17,8 +17,8 @@
     }
 
     function logout() {
-        // If there's a custom logout function defined, use it.
-        // Otherwise, fall back to back navigation.
+        // If there's a custom 'logout' action defined, use it.
+        // Otherwise, fall back to 'back' navigation.
         ($cmsActions?.logout) ? $cmsActions.logout() : history.back();
     }
 </script>

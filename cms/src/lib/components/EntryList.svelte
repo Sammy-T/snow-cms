@@ -36,6 +36,7 @@
         try{
             await $backend.deleteFiles($selectedEntries);
             
+            // If there's a custom 'on delete' action defined, call it on a successful delete.
             if($cmsActions?.onDelete) {
                 deleteAction = $cmsActions.onDelete($selectedEntries);
                 await deleteAction;
