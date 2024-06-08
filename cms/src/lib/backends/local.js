@@ -181,7 +181,7 @@ async function selectDirectory() {
     
     const options = {
         recursive: true,
-        id: 'projectRoot',
+        id: `pop-cms-${repoFolder}`,
         skipDirectory: (entry) => entry.name.startsWith('.') || skipDirs.includes(entry.name)
     };
 
@@ -361,7 +361,7 @@ async function uploadMediaFile() {
         const saveOpts = {
             fileName: file.name,
             extensions: [ext],
-            id: 'upload'
+            id: `pop-cms-upload-${repoFolder}`
         };
 
         // Save a new file
