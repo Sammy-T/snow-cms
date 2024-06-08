@@ -167,13 +167,12 @@ async function selectDirectory() {
     const mediaPattern = `\\/?${mediaPath}\\/[^_][\\w-]+\\.\\w+`;
     const mediaRegex = new RegExp(mediaPattern, 'i');
 
-    /** Recursive directory traversal can be limited with the `skipDirectory` field.
-     * However, using Array.includes() or a for loop breaks filtering functionality on Firefox.
-     * @see {@link https://github.com/GoogleChromeLabs/browser-fs-access#opening-directories}
-     */
+    const skipDirs = ['node_modules'];
+    
     const options = {
         recursive: true,
-        id: 'projectRoot'
+        id: 'projectRoot',
+        skipDirectory: (entry) => entry.name.startsWith('.') || skipDirs.includes(entry.name)
     };
 
     try {
@@ -185,7 +184,7 @@ async function selectDirectory() {
         // Filter out the files not contained in the collection directories
         // or that have filenames we're ignoring.
         files.forEach((file) => {
-            if(!rootDirHandle && file.directoryHandle?.name === 'member-demo') {
+            if(!rootDirHandle && file.directoryHandle?.name === 'member-demo') { //// TODO:
                 rootDirHandle = file.directoryHandle;
             }
 
