@@ -65,7 +65,7 @@
     }
 </script>
 
-<iframe bind:this={iframe} title="Preview" {srcdoc} on:load={onIframeLoaded}></iframe>
+<iframe bind:this={iframe} title="Preview" sandbox="allow-same-origin" {srcdoc} on:load={onIframeLoaded}></iframe>
 
 <style>
     iframe {
