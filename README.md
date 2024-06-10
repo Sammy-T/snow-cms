@@ -17,7 +17,7 @@ A configurable CMS inspired by [Decap CMS](https://github.com/decaporg/decap-cms
 - Specify a custom backend
 
 > [!NOTE]
-> Certain filesystem interactions may perform slowly on Firefox.
+> Certain filesystem interactions may perform slowly on Firefox when using the local backend.
 > For maximum compatibility, use a Chrome-based browser. 
 
 ## Getting Started
