@@ -1,4 +1,4 @@
-# Pop CMS
+# Snow CMS
 
 A configurable CMS inspired by [Decap CMS](https://github.com/decaporg/decap-cms) and [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
 
@@ -48,7 +48,7 @@ An example of a basic project with the expected structure would look something l
 index.html
 cms/                        // The path to access the CMS. (Path name can be anything)
  |-- index.html             // Page that loads 'cms.js'
- |-- pop.js                 // JS module that imports the CMS. (File name can be anything)
+ |-- snow.js                // JS module that imports the CMS. (File name can be anything)
 cms-config/                 // The path containing CMS config files. (Must be named 'cms-config')
  |-- config.yml             // CMS config file
  |-- preview-template.html  // Layout template to apply to page previews in the editor
@@ -66,7 +66,7 @@ cms-config/                 // The path containing CMS config files. (Must be na
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- The module that loads the CMS -->
-    <script type="module" src="pop.js"></script>
+    <script type="module" src="snow.js"></script>
   </head>
   <body>
     <!-- The root element used to load the CMS -->
@@ -75,12 +75,12 @@ cms-config/                 // The path containing CMS config files. (Must be na
 </html>
 ```
 
-#### cms/pop.js
+#### cms/snow.js
 
 ```js
 // Import the CMS css and js
-import 'pop-cms/dist/index.css';
-import 'pop-cms/dist/index';
+import 'snow-cms/dist/index.css';
+import 'snow-cms/dist/index';
 ```
 
 #### cms-config/
