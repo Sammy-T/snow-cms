@@ -2,6 +2,8 @@
 
 A configurable CMS inspired by [Decap CMS](https://github.com/decaporg/decap-cms) and [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
 
+I created this project because I wanted a CMS with a rich-text markdown widget, more intuitive custom preview configuration, and a configurable backend.
+
 ## Features
 
 - Editor Widgets
@@ -10,7 +12,7 @@ A configurable CMS inspired by [Decap CMS](https://github.com/decaporg/decap-cms
   - Text
   - Markdown
   - Hidden
-- Configurable Editor Preview layout templates
+- Configurable Editor Preview layout templates (Using html templates with replacement tags)
 - Configurable Editor Preview styles
 - Optional hooks into editor actions
 - Local filesystem backend
