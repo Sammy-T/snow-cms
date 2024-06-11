@@ -1,7 +1,7 @@
 {
   "name": "snow-cms",
   "version": "1.0.0",
-  "description": "",
+  "description": "A configurable CMS built with Svelte.",
   "main": "index.js",
   "type": "module",
   "files": [
