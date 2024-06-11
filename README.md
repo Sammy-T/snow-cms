@@ -1,6 +1,6 @@
 # Snow CMS
 
-A configurable CMS inspired by [Decap CMS](https://github.com/decaporg/decap-cms) and [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
+A configurable CMS built with [Svelte](https://svelte.dev/) and inspired by [Decap CMS](https://github.com/decaporg/decap-cms) and [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
 
 I created this project because I wanted a CMS with a rich-text markdown widget, more intuitive custom preview configuration, and a configurable backend.
 
