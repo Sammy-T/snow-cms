@@ -7,6 +7,41 @@ import PouchDBIdb from 'pouchdb-adapter-idb';
 import PouchDBFind from 'pouchdb-find';
 import yaml from 'js-yaml';
 
+/** 
+ * These type definitions illustrate the required properties for content document objects.
+ * Implementations can add additional properties as needed.
+ */
+
+/**
+ * An object containing the data of the content file's field metadata (used to form front matter).
+ * @typedef Fields
+ * @type {object}
+ * @property {String} title
+ * @property {Date|String} date
+ * @property {boolean} draft
+ */
+
+/**
+ * An object containing the content file's data.
+ * @typedef Doc
+ * @type {object}
+ * @property {String} name - The name of the file. (including file extension)
+ * @property {String} collection - The name of the collections.
+ * @property {Date|String} date
+ * @property {String} raw - The raw contents of the file.
+ * @property {Fields} fields
+ * @property {String} body - The contents of the file. (excluding frontmatter)
+ */
+
+/**
+ * An object containing the asset file's data.
+ * @typedef AssetDoc
+ * @type {object}
+ * @property {String} name - The name of the file. (including file extension)
+ * @property {String} url - The public path/url to the asset.
+ * @property {String} url_preview - The url used to preview the asset.
+ */
+
 let repoFolder;
 let db;
 let rootDirHandle;
@@ -61,10 +96,9 @@ async function createDbIndex(index) {
 }
 
 /**
- * Constructs a Pouchdb compatible doc from the provided file and its collection name.
+ * Constructs a PouchDB compatible doc from the provided file and its collection name.
  * @param {String} collectionName 
- * @param {*} file 
- * @returns 
+ * @param {*} file
  */
 async function constructDoc(collectionName, file) {
     let raw;
@@ -94,6 +128,10 @@ async function constructDoc(collectionName, file) {
     return doc;
 }
 
+/**
+ * Constructs a PouchDB compatible doc from the provided asset file.
+ * @param {*} file
+ */
 function constructAssetDoc(file) {
     const publicFolder = get(config).public_folder;
     const url = `${publicFolder}/${file.name}`;
@@ -113,7 +151,7 @@ function constructAssetDoc(file) {
 }
 
 /**
- * Searches for existing doc and updates the `_rev` field
+ * Searches for an existing doc and updates the `_rev` field
  * of the passed in doc if an existing one is found.
  * @param {*} doc 
  */
@@ -236,6 +274,11 @@ async function selectDirectory() {
     }
 }
 
+/**
+ * Gets the docs corresponding to the content files within the given collection.
+ * @param {String} collectionName 
+ * @returns {Promise<object[]>} A promise for an array of the documents.
+ */
 async function getFiles(collectionName) {
     try {
         const result = await db.find({
@@ -255,8 +298,14 @@ async function getFiles(collectionName) {
     }
 }
 
-async function saveFile(collection, fileData) {
-    const doc = { ...fileData }; // Copy the file data
+/**
+ * Creates a doc from the provided entry/doc data and saves it.
+ * @param {*} collection 
+ * @param {*} entryData 
+ * @returns The saved doc.
+ */
+async function saveFile(collection, entryData) {
+    const doc = { ...entryData }; // Copy the entry data
 
     const { date, body } = doc.fields;
     delete doc.fields.body; // Remove the body from the fields data
@@ -304,6 +353,10 @@ async function saveFile(collection, fileData) {
     }
 }
 
+/**
+ * Deletes the files associated with the provided docs.
+ * @param {object[]} docs 
+ */
 async function deleteFiles(docs) {
     try {
         docs.forEach(doc => doc._deleted = true);
@@ -328,6 +381,10 @@ async function deleteFiles(docs) {
     }
 }
 
+/**
+ * Gets the docs for all media files.
+ * @returns {Promise<object[]>} A promise for an array of the documents.
+ */
 async function getMediaFiles() {
     try {
         const result = await db.find({
@@ -345,8 +402,8 @@ async function getMediaFiles() {
 
 /**
  * Opens a dialog to select a file to upload, opens a save dialog to 
- * save the selected file, and saves the new file to the local db.
- * 
+ * save the selected file to disk, and saves the doc to the local db.
+ * ---
  * I wish this didn't open two dialogs but.. yeah.. this is where we are.
  */
 async function uploadMediaFile() {
