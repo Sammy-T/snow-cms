@@ -16,10 +16,11 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
 - Configurable Editor Preview styles
 - Optional hooks into editor actions
 - Local filesystem backend (Changes can be manually committed via your external Git CLI/GUI.)
-- Specify a custom backend
+  - Output Markdown files
+- Specify your own custom backend
 
 > [!NOTE]
-> Certain filesystem interactions may perform slowly on Firefox when using the local backend.
+> When using the local backend, certain filesystem interactions may perform slowly on Firefox.  
 > For maximum compatibility, use a Chrome-based browser. 
 
 ## Getting Started
@@ -35,7 +36,7 @@ TODO: add install command
 - Create a path in your project where you want the CMS to be accessed.\
   ex. `[my-site]/cms`
   - Create a javascript module and import the CMS css and js.
-  - Create an html file that loads the module and contains an element with an id of `app`.
+  - Create an html file that loads the module and contains a root element with an id of `app`.
 - Create a path named `cms-config` in your project **at the same level** as the previously created `cms` path.\
   ex. `[my-site]/cms-config`
   - Add a `config.yml` and any relevant css, html template, and js files.
