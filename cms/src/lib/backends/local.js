@@ -1,6 +1,6 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
-import { createFilename, parseFileType, parseLinks } from '$lib/util';
+import { parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import PouchDB from 'pouchdb-core';
 import PouchDBIdb from 'pouchdb-adapter-idb';
@@ -105,7 +105,7 @@ async function createDbIndex(index) {
  * @param {String} collectionName 
  * @param {*} file
  */
-async function constructDoc(collectionName, file) {
+async function constructDocFromFile(collectionName, file) {
     let raw;
 
     try {
@@ -137,7 +137,7 @@ async function constructDoc(collectionName, file) {
  * Constructs a PouchDB compatible doc from the provided asset file.
  * @param {*} file
  */
-function constructAssetDoc(file) {
+function constructAssetDocFromFile(file) {
     const publicFolder = get(config).public_folder;
     const url = `${publicFolder}/${file.name}`;
 
@@ -246,7 +246,7 @@ async function selectDirectory() {
             const isValidMedia = mediaRegex.test(file.webkitRelativePath);
 
             if(isValidMedia) {
-                mediaDocs.push(constructAssetDoc(file));
+                mediaDocs.push(constructAssetDocFromFile(file));
                 return;
             }
 
@@ -254,7 +254,7 @@ async function selectDirectory() {
                 const isValid = collectionRegexes[name].test(file.webkitRelativePath);
 
                 if(isValid) {
-                    docPromises.push(constructDoc(name, file));
+                    docPromises.push(constructDocFromFile(name, file));
                 }
             }
         });
@@ -304,28 +304,14 @@ async function getFiles(collectionName) {
 }
 
 /**
- * Creates a doc from the provided entry/doc data and saves it.
+ * Alters the provided doc if necessary and saves it.
  * @param {*} collection 
- * @param {*} entryData 
+ * @param {*} doc 
  * @returns The saved doc.
  */
-async function saveFile(collection, entryData) {
-    const doc = { ...entryData }; // Copy the entry data
-
-    const { date, body } = doc.fields;
-    delete doc.fields.body; // Remove the body from the fields data
-
-    const frontMatter = yaml.dump(doc.fields, { quotingType: `"`, forceQuotes: true });
-
-    doc.date = date;
-    doc.body = body;
-    doc.collection = collection.name;
-
-    if(!doc.name) doc.name = createFilename(collection, doc.fields);
-
+async function saveFile(collection, doc) {
+    // Add the doc id if missing
     if(!doc._id) doc._id = [get(config).repo_folder, collection.folder, doc.name].join('/');
-
-    doc.raw = `---\n${frontMatter}---\n\n${doc.body}`;
 
     try {
         const ext = `.${collection.extension}`;
@@ -449,7 +435,7 @@ async function uploadMediaFile() {
             handle: saveResp,
         };
 
-        const doc = constructAssetDoc(newFile);
+        const doc = constructAssetDocFromFile(newFile);
 
         // Save the file to the db
         const resp = await db.put(doc);
@@ -462,8 +448,8 @@ async function uploadMediaFile() {
 /**
  * Searches the db for asset docs with `url` or `url_preview` properties
  * that match the provided urls.
- * @param {String} urlType The url type to search for. `'public' | 'preview'`
- * @param {String[]} urls The urls to search for.
+ * @param {String} urlType - The url type to search for. `'public' | 'preview'`
+ * @param {String[]} urls - The urls to search for.
  */
 async function findDocsWithUrls(urlType, urls) {
     const resultPromises = [];
@@ -495,8 +481,6 @@ async function findDocsWithUrls(urlType, urls) {
 
     // Compile the docs
     results.forEach(result => docs.push(...result.docs));
-
-    console.log('matching docs', docs);
 
     return docs;
 }

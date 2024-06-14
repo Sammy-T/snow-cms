@@ -1,4 +1,5 @@
 import { get } from 'svelte/store';
+import yaml from 'js-yaml';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -188,6 +189,31 @@ export function createFilename(collection, docFields) {
 }
 
 /**
+ * Constructs a doc with the required properties.
+ * @param {*} collection 
+ * @param {*} entryData 
+ */
+export function constructDoc(collection, entryData) {
+    const doc = { ...entryData }; // Copy the entry data
+
+    // @ts-ignore
+    const { date, body } = { ...doc.fields };
+    delete doc.fields.body; // Remove the body from the fields data
+
+    const frontMatter = yaml.dump(doc.fields, { quotingType: `"`, forceQuotes: true });
+
+    doc.date = date;
+    doc.body = body;
+    doc.collection = collection.name;
+
+    if(!doc.name) doc.name = createFilename(collection, doc.fields);
+
+    doc.raw = `---\n${frontMatter}---\n\n${doc.body}`;
+
+    return doc;
+}
+
+/**
  * Finds the MIME type corresponding to the provided extension.
  * @param {String} ext - The extension ex: '.ext'
  * @returns {String} The MIME type
@@ -236,7 +262,6 @@ export async function loadCustomBackend(configStore, backendStore) {
     const cfg = {
         configStore,
         backendStore,
-        createFilenameFunc: createFilename,
         parseLinksFunc: parseLinks
     };
 

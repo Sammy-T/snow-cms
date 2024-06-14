@@ -11,7 +11,7 @@
     import { selectedCollection, editingEntry, backend, cmsActions } from '$stores';
     import { writable } from 'svelte/store';
     import { setContext } from 'svelte';
-    import { parseFormEntry } from '$lib/util';
+    import { constructDoc, parseFormEntry } from '$lib/util';
 
     const submitted = writable();
     setContext('submitted', submitted);
@@ -42,7 +42,9 @@
             }
         }
 
-        $submitted = $backend.saveFile($selectedCollection, entryData);
+        const doc = constructDoc($selectedCollection, entryData);
+        
+        $submitted = $backend.saveFile($selectedCollection, doc);
 
         try {
             $editingEntry = await $submitted;
