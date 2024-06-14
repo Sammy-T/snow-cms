@@ -16,6 +16,7 @@
     const submitted = writable();
     setContext('submitted', submitted);
 
+    let parsing;
     let saveAction;
 
     const editorInputs = {
@@ -36,9 +37,11 @@
             const field = $selectedCollection.fields.find(f => f.name === key);
 
             try {
-                entryData.fields[key] = await parseFormEntry(field, value, $backend);
+                parsing = parseFormEntry(field, value, $backend)
+                entryData.fields[key] = await parsing;
             } catch(error) {
                 console.error('Error parsing form entry.', error);
+                return;
             }
         }
 
@@ -93,6 +96,10 @@
         <Preview />
     </section>
 </div>
+
+{#await parsing catch error}
+    <Warning msg="Unable to save" details={error.message} />
+{/await}
 
 {#await $submitted}
     <Pending msg="Saving" />

@@ -7,6 +7,9 @@ dayjs.extend(customParseFormat);
 
 const configPath = '../../cms-config/';
 
+const mdParseErrMsg = `Unable to parse markdown entry. Backend must implement 'replacePreviewLinks()' 
+    and return a valid string.`;
+
 /**
  * Converts the provided `Date` to a string format compatible with HTML `<input>` element values.
  * @param {String} type - The format/input type ('datetime-local', 'date', or 'time')
@@ -102,11 +105,11 @@ export async function parseFormEntry(field, value, backend) {
 
     switch(field.widget) {
         case 'markdown':
-            try {
-                entryValue = await backend.replacePreviewLinks(value);
-            } catch(error) {
-                // Already caught and re-thrown in the backend
-            }
+            if(!backend?.replacePreviewLinks) throw new Error(mdParseErrMsg);
+            
+            entryValue = await backend?.replacePreviewLinks(value);
+                
+            if(entryValue == null) throw new Error(mdParseErrMsg);
             break;
 
         case 'datetime':
