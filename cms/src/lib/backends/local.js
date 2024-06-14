@@ -42,8 +42,13 @@ import yaml from 'js-yaml';
  * @property {String} url_preview - The url used to preview the asset.
  */
 
+/** @type {String} */
 let repoFolder;
+
+/** @type {PouchDB.Database} */
 let db;
+
+/** @type {FileSystemDirectoryHandle} */
 let rootDirHandle;
 
 function init() {
@@ -455,6 +460,48 @@ async function uploadMediaFile() {
 }
 
 /**
+ * Searches the db for asset docs with `url` or `url_preview` properties
+ * that match the provided urls.
+ * @param {String} urlType The url type to search for. `'public' | 'preview'`
+ * @param {String[]} urls The urls to search for.
+ */
+async function findDocsWithUrls(urlType, urls) {
+    const resultPromises = [];
+
+    // Find the docs with the matching public / preview url(s)
+    urls.forEach(url => {
+        /** @type {PouchDB.Find.FindRequest} */
+        const query = {};
+
+        if(urlType === 'public') {
+            query.selector = {
+                url: url
+            };
+        } else {
+            query.selector = {
+                url_preview: url
+            };
+        }
+
+        const promise = db.find(query);
+
+        resultPromises.push(promise);
+    });
+
+    // Await all the query results
+    const results = await Promise.all(resultPromises);
+
+    const docs = [];
+
+    // Compile the docs
+    results.forEach(result => docs.push(...result.docs));
+
+    console.log('matching docs', docs);
+
+    return docs;
+}
+
+/**
  * Replaces the public links found in the string with their corresponding preview links.
  * @param {String} rawValue  
  */
@@ -466,26 +513,7 @@ async function replacePublicLinks(rawValue) {
 
         if(links.length === 0) return rawValue;
         
-        const resultPromises = [];
-
-        // Find the docs with the matching public url(s)
-        links.forEach(link => {
-            const promise = db.find({
-                selector: {
-                    url: link
-                }
-            });
-
-            resultPromises.push(promise);
-        });
-        
-        // Await all the query results
-        const results = await Promise.all(resultPromises);
-        
-        const docs = [];
-
-        // Compile the docs
-        results.forEach(result => docs.push(...result.docs));
+        const docs = await findDocsWithUrls('public', links);
 
         // Replace the public urls
         docs.forEach(doc => {
@@ -511,26 +539,7 @@ async function replacePreviewLinks(rawValue) {
 
         if(links.length === 0) return rawValue;
         
-        const resultPromises = [];
-
-        // Find the docs with the matching preview url(s)
-        links.forEach(link => {
-            const promise = db.find({
-                selector: {
-                    url_preview: link
-                }
-            });
-
-            resultPromises.push(promise);
-        });
-        
-        // Await all the query results
-        const results = await Promise.all(resultPromises);
-        
-        const docs = [];
-
-        // Compile the docs
-        results.forEach(result => docs.push(...result.docs));
+        const docs = await findDocsWithUrls('preview', links);
 
         // Replace the preview urls
         docs.forEach(doc => {
