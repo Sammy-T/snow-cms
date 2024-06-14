@@ -12,12 +12,12 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
   - Text
   - Markdown
   - Hidden
-- Configurable Editor Preview layout templates (Using html templates with replacement tags)
-- Configurable Editor Preview styles
+- Editor Preview layout templates (Using html templates with replacement tags)
+- Editor Preview styles
 - Optional hooks into editor actions
 - Local filesystem backend (Changes can be manually committed via your external Git CLI/GUI.)
-  - Output Markdown files with YAML front matter
 - Specify your own custom backend
+- Output Markdown files with YAML front matter
 
 > [!NOTE]
 > When using the local backend, certain filesystem interactions may perform slowly on Firefox.  
