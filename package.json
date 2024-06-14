@@ -12,7 +12,7 @@
     "dev": "run-p build:watch:cms serve:site",
     "serve:site": "vite dev-site",
     "build": "vite build -c cms/vite.config.js",
-    "build:watch:cms": "vite build --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
+    "build:watch:cms": "vite build --minify false --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
