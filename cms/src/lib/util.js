@@ -230,7 +230,8 @@ export async function loadCustomBackend(configStore, backendStore) {
 
     const url = new URL(`${configPath}${file}`, window.location.href).href;
 
-    const customBackend = await import(url);
+    
+    const customBackend = await import(/* @vite-ignore */ url);
 
     const cfg = {
         configStore,

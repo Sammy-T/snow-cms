@@ -41,7 +41,7 @@ async function loadCmsActions(file) {
     const path = `../../cms-config/${file}`;
     const url = new URL(path, window.location.href).href;
 
-    const customActions = await import(url);
+    const customActions = await import(/* @vite-ignore */ url);
 
     return customActions.default;
 }
