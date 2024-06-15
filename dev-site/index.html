@@ -5,15 +5,37 @@
     <link rel="icon" type="image/svg+xml" href="/cms/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <title>Dev Site</title>
+    <title>Snow CMS - Dev Site</title>
 
-    <link rel="stylesheet" href="/cms-config/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+
+    <style>
+      main.container {
+        max-width: 768px;
+      }
+
+      main {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      article {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
   </head>
   <body>
     <main class="container">
       <article>
-        <h1>Dev Site</h1>
-        <a href="/cms/">cms</a>
+        <hgroup>
+          <h1>Snow CMS</h1>
+          <p>Dev Site</p>
+        </hgroup>
+
+        <a role="button" href="/cms/">View CMS</a>
       </article>
     </main>
   </body>
