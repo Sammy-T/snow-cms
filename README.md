@@ -121,3 +121,5 @@ Contains the source files to build the CMS.
 #### dev-site/
 
 Contains files for running the development server.
+
+*Development server site's photos by [Pixabay](https://www.pexels.com/photo/scenic-view-of-rice-paddy-247599/) and [Simon Berger](https://www.pexels.com/photo/silhouette-of-mountains-1323550/) from Pexels.*
