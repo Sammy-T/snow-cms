@@ -1,7 +1,7 @@
 backend:
   name: custom
   branch: master
-  file: 'backend/none.js' # Relative to the /cms-config path
+  file: 'backend/example.js' # Relative to the /cms-config path
 local_backend: true # Set to 'true' to override the backend with the local backend
 
 custom_actions: 'cms-actions.js' # Relative to the /cms-config path

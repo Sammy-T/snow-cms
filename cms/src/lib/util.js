@@ -1,4 +1,5 @@
 import { get } from 'svelte/store';
+import { fileOpen } from 'browser-fs-access';
 import yaml from 'js-yaml';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -265,7 +266,9 @@ export async function loadCustomBackend(configStore, backendStore) {
     const cfg = {
         configStore,
         backendStore,
-        parseLinksFunc: parseLinks
+        getStoreValueFunc: get,
+        parseLinksFunc: parseLinks,
+        fileOpenFunc: fileOpen
     };
 
     customBackend.default.init(cfg);

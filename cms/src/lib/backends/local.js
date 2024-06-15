@@ -493,10 +493,12 @@ async function replacePublicLinks(rawValue) {
     let processedValue = rawValue;
 
     try {
+        // Parse the urls from the string
         const links = parseLinks(processedValue);
 
         if(links.length === 0) return rawValue;
         
+        // Find the docs with matching urls
         const docs = await findDocsWithUrls('public', links);
 
         // Replace the public urls
@@ -519,10 +521,12 @@ async function replacePreviewLinks(rawValue) {
     let processedValue = rawValue;
 
     try {
+        // Parse the urls from the string
         const links = parseLinks(processedValue);
 
         if(links.length === 0) return rawValue;
         
+        // Find the docs with matching urls
         const docs = await findDocsWithUrls('preview', links);
 
         // Replace the preview urls
