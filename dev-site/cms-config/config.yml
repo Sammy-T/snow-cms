@@ -24,8 +24,8 @@ collections:
       - { label: 'Body', name: 'body', widget: 'markdown' }
 
 previews: # Filenames in this section are relative to the /cms-config path
-  default: main # Default preview name, can also be specified as 'preview' on each collection
+  default: main # Default preview name, can also be specified on each collection using a 'preview' attribute
   templates:
     - { name: 'main', template: 'preview-template.html' }
   styles: # Styles will load in listed order
-    - { name: 'main', files: ['pico.min.css', 'preview-styles.css'] }
+    - { name: 'main', files: ['preview-styles.css', 'preview-styles-news.css'] }
