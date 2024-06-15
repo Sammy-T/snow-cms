@@ -24,7 +24,7 @@ collections:
       - { label: 'Body', name: 'body', widget: 'markdown' }
 
 previews: # Filenames in this section are relative to the /cms-config path
-  default: main # Default preview name, can also be specifed as 'preview' on each collection
+  default: main # Default preview name, can also be specified as 'preview' on each collection
   templates:
     - { name: 'main', template: 'preview-template.html' }
   styles: # Styles will load in listed order

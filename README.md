@@ -86,7 +86,7 @@ import 'snow-cms/dist/index';
 
 #### cms-config/
 
-See [dev-site/cms-config](/dev-site/cms-config) for example config files.
+See [Widgets](#widgets) for information on widget configuration and [dev-site/cms-config](/dev-site/cms-config) for example config files.
 
 ## Development
 
@@ -123,3 +123,69 @@ Contains the source files to build the CMS.
 Contains files for running the development server.
 
 *Development server site's photos by [Pixabay](https://www.pexels.com/photo/scenic-view-of-rice-paddy-247599/) and [Simon Berger](https://www.pexels.com/photo/silhouette-of-mountains-1323550/) from Pexels.*
+
+## Widgets
+
+Widgets share the following configuration options:
+
+- `label`: The input label displayed in the editor interface.
+- `name`: The name of the input.
+- `default`: The input's default value.
+- `required`: Whether the input is required. (Defaults to `true`.)
+
+> [!IMPORTANT]
+> Each collection must have widgets configured for the names `title`, `date`, and `body`.
+
+### Boolean
+
+- `widget`: `'boolean'`
+
+```yaml
+{ label: 'Draft', name: 'draft', widget: 'boolean', required: false }
+```
+
+> [!NOTE]
+> If the Boolean Widget's `required` option is set to `true` or isn't specified, 
+> the input's value must be `true` for editor data to submit.
+    
+### DateTime
+
+- `widget`: `'datetime'`
+- `type`: `'datetime-local|date|time'` Which input to display.
+- `datetime_format`: How the datetime should be displayed.
+- `date_format`: How the date should be displayed.
+- `time_format`: How the time should be displayed.
+
+```yaml
+{ label: 'Publish Date', name: 'date', widget: 'datetime', type: 'datetime-local', 
+  datetime_format: 'MM.DD.YYYY HH:mm' }
+```
+
+> [!NOTE]
+> The corresponding `format` option should be set depending on the `type`.
+
+### Text
+
+- `widget`: `'string|text'` Which input to display. Use `string` for single-line or `text` for multiline.
+
+```yaml
+{ label: 'Title', name: 'title', widget: 'string' }
+```
+
+### Markdown
+
+- `widget`: `'markdown'`
+
+```yaml
+{ label: 'Body', name: 'body', widget: 'markdown' }
+```
+
+### Hidden
+
+- `widget`: `'hidden'`
+- `type`: `'boolean|text|datetime-local|date|time'` The type of the input's value.
+- `default`: The value of the hidden input.
+
+```yaml
+{ name: 'hiddenValue', widget: 'hidden', type: 'text', default: 'secret box' }
+```
