@@ -19,7 +19,7 @@
   "author": "Sammy-T",
   "license": "ISC",
   "dependencies": {
-    "@picocss/pico": "^1.5.12"
+    "@picocss/pico": "^2.0.6"
   },
   "devDependencies": {
     "@milkdown/core": "^7.3.6",

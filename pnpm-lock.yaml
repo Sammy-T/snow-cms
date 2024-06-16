@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@picocss/pico':
-        specifier: ^1.5.12
-        version: 1.5.13
+        specifier: ^2.0.6
+        version: 2.0.6
     devDependencies:
       '@milkdown/core':
         specifier: ^7.3.6
@@ -283,8 +283,9 @@ packages:
       '@milkdown/prose': ^7.2.0
       '@milkdown/transformer': ^7.2.0
 
-  '@picocss/pico@1.5.13':
-    resolution: {integrity: sha512-BPTeE4JC95+7/vsG9r+6hDR1qUkV4YZ1blI/TI6peOmM94XubjmUDE3jUi4f6DBV6WmCL76ueTct/NerJ33E8A==}
+  '@picocss/pico@2.0.6':
+    resolution: {integrity: sha512-/d8qsykowelD6g8k8JYgmCagOIulCPHMEc2NC4u7OjmpQLmtSetLhEbt0j1n3fPNJVcrT84dRp0RfJBn3wJROA==}
+    engines: {node: '>=18.19.0'}
 
   '@rollup/rollup-android-arm-eabi@4.18.0':
     resolution: {integrity: sha512-Tya6xypR10giZV1XzxmH5wr25VcZSncG0pZIjfePT0OVBvqNEurzValetGNarVrGiq66EBVAFn15iYX4w6FKgQ==}
@@ -1490,7 +1491,7 @@ snapshots:
       nanoid: 5.0.7
       tslib: 2.6.3
 
-  '@picocss/pico@1.5.13': {}
+  '@picocss/pico@2.0.6': {}
 
   '@rollup/rollup-android-arm-eabi@4.18.0':
     optional: true
