@@ -104,7 +104,7 @@
         align-items: center;
         gap: 0.3rem;
         padding: 0.25rem 0.5rem;
-        background-color: var(--muted-border-color);
+        background-color: var(--pico-muted-border-color);
         border-radius: 0.25rem;
         pointer-events: auto;
     }
@@ -113,7 +113,7 @@
         width: auto;
         margin: 0;
         padding: 0.25rem;
-        font-size: calc(var(--font-size) * 0.75);
+        font-size: calc(var(--pico-font-size) * 0.75);
     }
 
     #link-editor input {

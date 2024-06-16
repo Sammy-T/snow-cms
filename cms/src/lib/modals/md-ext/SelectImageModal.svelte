@@ -104,7 +104,7 @@
     }
 
     .selected {
-        outline: 2px solid var(--contrast);
+        outline: 2px solid var(--pico-contrast);
     }
 
     footer {

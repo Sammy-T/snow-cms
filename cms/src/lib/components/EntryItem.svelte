@@ -39,11 +39,15 @@
         display: flex;
         align-items: center;
         padding: 0.5rem;
-        border-bottom: 1px solid var(--secondary-focus);
+        border-bottom: 1px solid var(--pico-secondary-focus);
     }
 
     .item:hover {
-        background-color: var(--table-row-stripped-background-color);
+        background-color: var(--pico-table-row-stripped-background-color);
+    }
+
+    a {
+        text-decoration: none;
     }
 
     a:hover, a:focus, a:active {

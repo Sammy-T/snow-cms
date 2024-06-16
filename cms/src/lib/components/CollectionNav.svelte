@@ -30,10 +30,11 @@
         display: flex;
         align-items: center;
         gap: 0.35rem;
+        text-decoration: none;
     }
 
     a:hover {
-        background-color: var(--secondary-focus);
+        background-color: var(--pico-secondary-focus);
     }
 
     a:hover, a:focus, a:active {
@@ -41,7 +42,7 @@
     }
 
     .selected {
-        background-color: var(--secondary-focus);
+        background-color: var(--pico-secondary-focus);
     }
 
     @media (min-width: 720px) {

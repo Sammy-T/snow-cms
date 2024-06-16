@@ -7,8 +7,8 @@ body {
 }
 
 nav {
-    padding: 0 var(--spacing);
-    border: var(--border-width) solid var(--muted-border-color);
+    padding: 0 var(--pico-spacing);
+    border: var(--pico-border-width) solid var(--pico-muted-border-color);
 }
 
 nav ul:last-of-type {
@@ -16,7 +16,7 @@ nav ul:last-of-type {
 }
 
 nav li {
-    padding: calc(var(--spacing) * 0.6) var(--nav-element-spacing-horizontal);
+    padding: calc(var(--pico-spacing) * 0.6) var(--pico-nav-element-spacing-horizontal);
 }
 
 nav svg {
@@ -49,8 +49,8 @@ button {
     min-height: 3rem;
     bottom: 1rem;
     right: 2rem;
-    background-color: var(--code-background-color);
-    border: 2px solid var(--muted-color);
+    background-color: var(--pico-code-background-color);
+    border: 2px solid var(--pico-muted-color);
     border-radius: 0.5rem;
     padding: 0.25rem 0.75rem;
     display: flex;
@@ -72,31 +72,27 @@ button {
     overflow: hidden;
 }
 
-.editorInput {
-    padding: calc(var(--spacing) * 0.5) var(--spacing);
-    border-bottom: var(--border-width) solid var(--muted-border-color);
+label.editorInput {
+    width: 100%;
+    padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+    border-bottom: var(--pico-border-width) solid var(--pico-muted-border-color);
 }
 
 /** Extend Milkdown styles **/
 .editor {
-    border: 1px solid var(--form-element-border-color);
+    border: 1px solid var(--pico-form-element-border-color);
     border-radius: 0.25rem;
-    margin-top: calc(var(--spacing) * 0.25);
-    margin-bottom: var(--spacing);
-    padding: var(--form-element-spacing-vertical) var(--form-element-spacing-horizontal);
+    margin-top: calc(var(--pico-spacing) * 0.5);
+    margin-bottom: var(--pico-spacing);
+    padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
     max-height: 10rem;
     overflow-y: auto;
 }
 
-.editor h1, .editor h2, .editor h3, .editor h4, .editor h5, .editor h6, .editor p {
-    margin: 0;
-    /* font-size: calc(var(--font-size) * 0.8); */
-}
-
 .ProseMirror-focused {
     outline: none;
-    border: var(--border-width) solid var(--form-element-active-border-color);
-    box-shadow: 0 0 0 var(--outline-width) var(--form-element-focus-color);
+    border: var(--pico-border-width) solid var(--pico-form-element-active-border-color);
+    box-shadow: 0 0 0 var(--pico-outline-width) var(--pico-form-element-focus-color);
 }
 
 @media (min-width: 720px) {

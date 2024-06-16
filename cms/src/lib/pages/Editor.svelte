@@ -117,14 +117,14 @@
     }
 
     section {
-        border: var(--border-width) solid var(--muted-border-color);
+        border: var(--pico-border-width) solid var(--pico-muted-border-color);
         margin: 0;
     }
 
     header {
-        padding: calc(var(--spacing) * 0.5) var(--spacing);
-        border-bottom: var(--border-width) solid var(--muted-border-color);
-        background-color: var(--card-background-color);
+        padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+        border-bottom: var(--pico-border-width) solid var(--pico-muted-border-color);
+        background-color: var(--pico-card-background-color);
     }
 
     form {
@@ -147,7 +147,7 @@
         }
 
         #inputArea {
-            width: 40vw;
+            width: 42vw;
         }
 
         #previewArea {

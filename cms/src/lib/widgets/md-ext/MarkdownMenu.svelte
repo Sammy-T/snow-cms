@@ -113,7 +113,7 @@
     }
 
     .editor-menu * {
-        font-size: calc(var(--font-size) * 0.75);
+        font-size: calc(var(--pico-font-size) * 0.75);
         margin: 0;
     }
 
@@ -128,10 +128,10 @@
         align-items: center;
         background-color: unset;
         border: unset;
-        color: var(--contrast);
+        color: var(--pico-contrast);
     }
 
     .editor-menu button:hover {
-        background-color: var(--secondary-focus);
+        background-color: var(--pico-secondary-focus);
     }
 </style>

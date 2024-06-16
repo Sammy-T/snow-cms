@@ -110,10 +110,10 @@
 
 <style>
     li span {
-        color: var(--muted-color);
+        color: var(--pico-muted-color);
     }
 
     a:hover {
-        background-color: var(--secondary-focus);
+        background-color: var(--pico-secondary-focus);
     }
 </style>

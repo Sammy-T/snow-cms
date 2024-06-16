@@ -249,7 +249,7 @@
 
 <style>
     #md-editor {
-        margin-top: calc(var(--spacing) * 0.25);
+        margin-top: calc(var(--pico-spacing) * 0.25);
         position: relative;
     }
 </style>

@@ -38,8 +38,8 @@
 
 <style>
     aside {
-        padding: var(--spacing);
-        border: var(--border-width) solid var(--muted-border-color);
+        padding: var(--pico-spacing);
+        border: var(--pico-border-width) solid var(--pico-muted-border-color);
     }
 
     ul {

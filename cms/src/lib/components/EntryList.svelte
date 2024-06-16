@@ -91,14 +91,14 @@
 
 <style>
     main {
-        border: var(--border-width) solid var(--muted-border-color);
+        border: var(--pico-border-width) solid var(--pico-muted-border-color);
         display: flex;
         flex-direction: column;
     }
 
     header {
-        padding: calc(var(--spacing) * 0.5) var(--spacing);
-        border-bottom: var(--border-width) solid var(--muted-border-color);
+        padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+        border-bottom: var(--pico-border-width) solid var(--pico-muted-border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -119,7 +119,7 @@
 
     #empty {
         flex-grow: 1;
-        padding: var(--spacing);
+        padding: var(--pico-spacing);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -127,8 +127,8 @@
     }
 
     #items {
-        padding: calc(var(--spacing) * 0.5) var(--spacing);
-        border: var(--border-width) solid var(--muted-border-color);
+        padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+        border: var(--pico-border-width) solid var(--pico-muted-border-color);
         flex-grow: 1;
     }
 

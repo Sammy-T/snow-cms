@@ -25,7 +25,7 @@
         width: 12rem;
         height: 12rem;
         position: relative;
-        border: 1px solid var(--muted-border-color);
+        border: 1px solid var(--pico-muted-border-color);
         border-radius: 0.4rem;
         overflow: hidden;
     }
