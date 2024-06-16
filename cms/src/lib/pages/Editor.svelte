@@ -149,7 +149,7 @@
         }
 
         #inputArea {
-            width: 42vw;
+            width: 40vw;
         }
 
         #previewArea {

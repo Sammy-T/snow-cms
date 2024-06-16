@@ -113,7 +113,7 @@
     }
 
     .editor-menu * {
-        font-size: calc(var(--pico-font-size) * 0.75);
+        font-size: calc(var(--pico-font-size) * 0.6);
         margin: 0;
     }
 
