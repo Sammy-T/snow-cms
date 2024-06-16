@@ -3,6 +3,7 @@
     import InputBoolean from '$lib/widgets/InputBoolean.svelte';
     import InputDateTime from '$lib/widgets/InputDateTime.svelte';
     import InputText from '$lib/widgets/InputText.svelte';
+    import InputNumber from '$lib/widgets/InputNumber.svelte';
     import InputMarkdown from '$lib/widgets/InputMarkdown.svelte';
     import InputHidden from '$lib/widgets/InputHidden.svelte';
     import Preview from '$lib/components/Preview.svelte';
@@ -24,6 +25,7 @@
         'text': InputText,
         'datetime': InputDateTime,
         'boolean': InputBoolean,
+        'number': InputNumber,
         'markdown': InputMarkdown,
         'hidden': InputHidden
     };

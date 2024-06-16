@@ -1,5 +1,5 @@
 ---
-title: "Editing \"Markdown\" 05"
+title: "Editing Markdown"
 date: 2023-08-19T04:00:00.000Z
 draft: false
 ---

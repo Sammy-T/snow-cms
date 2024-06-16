@@ -136,6 +136,10 @@ export async function parseFormEntry(field, value, backend) {
         case 'boolean':
             entryValue = value === 'true';
             break;
+        
+        case 'number':
+            entryValue = Number(value);
+            break;
 
         case 'hidden':
             switch(field.type) {
@@ -153,6 +157,10 @@ export async function parseFormEntry(field, value, backend) {
 
                 case 'boolean':
                     entryValue = value === 'true';
+                    break;
+                
+                case 'number':
+                    entryValue = Number(value);
                     break;
 
                 default:

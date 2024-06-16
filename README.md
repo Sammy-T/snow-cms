@@ -8,6 +8,7 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
 
 - Editor Widgets
   - Boolean
+  - Number
   - DateTime
   - Text
   - Markdown
@@ -134,7 +135,7 @@ Widgets share the following configuration options:
 - `required`: Whether the input is required. (Defaults to `true`.)
 
 > [!IMPORTANT]
-> Each collection must have widgets configured for the names `title`, `date`, and `body`.
+> Each collection must have widgets configured for the names `title`, `date`, `draft`, and `body`.
 
 ### Boolean
 
@@ -147,7 +148,18 @@ Widgets share the following configuration options:
 > [!NOTE]
 > If the Boolean Widget's `required` option is set to `true` or isn't specified, 
 > the input's value must be `true` for editor data to submit.
-    
+
+### Number
+
+- `widget`: `'number'`
+- `step`: The amount the value increments / decrements by. (Defaults to `1`.)
+- `min`: The minimum value allowed.
+- `max`: The maximum value allowed.
+
+```yaml
+{ label: 'Cookies', name: 'cookies', widget: 'number', step: 5 }
+```
+
 ### DateTime
 
 - `widget`: `'datetime'`
@@ -183,7 +195,7 @@ Widgets share the following configuration options:
 ### Hidden
 
 - `widget`: `'hidden'`
-- `type`: `'boolean|text|datetime-local|date|time'` The type of the input's value.
+- `type`: `'boolean|number|text|datetime-local|date|time'` The type of the input's value.
 - `default`: The value of the hidden input.
 
 ```yaml
