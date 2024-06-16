@@ -4,6 +4,9 @@ A configurable CMS built with [Svelte](https://svelte.dev/) and inspired by [Dec
 
 I created this project because I wanted a CMS with a rich-text markdown widget, more intuitive custom preview configuration, and a configurable backend.
 
+![snow_screens_01](https://github.com/Sammy-T/snow-cms/assets/22360092/ae6b67ec-3e63-456c-a461-fb6da55d35e0)
+![snow_screens_02](https://github.com/Sammy-T/snow-cms/assets/22360092/b2f1bf6e-86b0-4580-8f06-5e426538eeef)
+
 ## Features
 
 - Editor Widgets
@@ -22,7 +25,7 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
 
 > [!NOTE]
 > When using the local backend, certain filesystem interactions may perform slowly on Firefox.  
-> For maximum compatibility, use a Chrome-based browser. 
+> For maximum compatibility, use a Chrome-based browser.
 
 ## Getting Started
 
