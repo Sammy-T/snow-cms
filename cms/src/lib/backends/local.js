@@ -310,15 +310,21 @@ async function getFiles(collectionName) {
  * @returns The saved doc.
  */
 async function saveFile(collection, doc) {
+    const repoFolder = get(config).repo_folder;
+
     // Add the doc id if missing
-    if(!doc._id) doc._id = [get(config).repo_folder, collection.folder, doc.name].join('/');
+    if(!doc._id) doc._id = [repoFolder, collection.folder, doc.name].join('/');
 
     try {
         const ext = `.${collection.extension}`;
 
+        // Create the save ID and limit its length to 32 chars.
+        const saveId = `snow-cms-save-${repoFolder}-${collection.folder.split(/[\/\\]/).at(-1)}`.substring(0, 32);
+
         const saveOpts = {
             fileName: doc.name,
-            extensions: [ext]
+            extensions: [ext],
+            id: saveId
         };
 
         const blob = new Blob([doc.raw], { type: parseFileType(ext) });
