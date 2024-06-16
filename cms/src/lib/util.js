@@ -84,15 +84,15 @@ export async function loadTemplate(config, name) {
 
 /**
  * Replaces the tags found in the provided template with HTML link tags containing the styles
- * and div tags with `data-tag="fieldname"` attributes.
- * @param {String} template 
- * @param {String} styles 
- * @returns 
+ * and `span` tags with `data-tag="fieldname"` attributes.
+ * @param {String} template - The template HTML string.
+ * @param {String} styles - The styles to insert.
+ * @returns The processed HTML string.
  */
 export function replaceTags(template, styles) {
     return template?.replace('{{styles}}', styles)
-        .replaceAll('{{', '<div data-tag="')
-        .replaceAll('}}', '" style="white-space: pre-wrap;"></div>');
+        .replaceAll('{{', '<span data-tag="')
+        .replaceAll('}}', '"></span>');
 }
 
 /**
