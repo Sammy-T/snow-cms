@@ -142,7 +142,12 @@ Widgets share the following configuration options:
 - `widget`: `'boolean'`
 
 ```yaml
-{ label: 'Draft', name: 'draft', widget: 'boolean', required: false }
+{
+  label: 'Draft',
+  name: 'draft',
+  widget: 'boolean',
+  required: false
+}
 ```
 
 > [!NOTE]
@@ -157,7 +162,12 @@ Widgets share the following configuration options:
 - `max`: The maximum value allowed.
 
 ```yaml
-{ label: 'Cookies', name: 'cookies', widget: 'number', step: 5 }
+{
+  label: 'Cookies',
+  name: 'cookies',
+  widget: 'number',
+  step: 5
+}
 ```
 
 ### DateTime
@@ -169,8 +179,13 @@ Widgets share the following configuration options:
 - `time_format`: How the time should be displayed.
 
 ```yaml
-{ label: 'Publish Date', name: 'date', widget: 'datetime', type: 'datetime-local', 
-  datetime_format: 'MM.DD.YYYY HH:mm' }
+{
+  label: 'Publish Date',
+  name: 'date',
+  widget: 'datetime',
+  type: 'datetime-local',
+  datetime_format: 'MM.DD.YYYY HH:mm'
+}
 ```
 
 > [!NOTE]
@@ -181,7 +196,11 @@ Widgets share the following configuration options:
 - `widget`: `'string|text'` Which input to display. Use `string` for single-line or `text` for multiline.
 
 ```yaml
-{ label: 'Title', name: 'title', widget: 'string' }
+{
+  label: 'Title',
+  name: 'title',
+  widget: 'string'
+}
 ```
 
 ### Markdown
@@ -189,7 +208,11 @@ Widgets share the following configuration options:
 - `widget`: `'markdown'`
 
 ```yaml
-{ label: 'Body', name: 'body', widget: 'markdown' }
+{
+  label: 'Body',
+  name: 'body',
+  widget: 'markdown'
+}
 ```
 
 ### Hidden
@@ -199,5 +222,10 @@ Widgets share the following configuration options:
 - `default`: The value of the hidden input.
 
 ```yaml
-{ name: 'hiddenValue', widget: 'hidden', type: 'text', default: 'secret box' }
+{
+  name: 'hiddenValue',
+  widget: 'hidden',
+  type: 'text',
+  default: 'secret box'
+}
 ```
