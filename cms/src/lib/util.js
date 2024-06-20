@@ -279,5 +279,5 @@ export async function loadCustomBackend(configStore, backendStore) {
         fileOpenFunc: fileOpen
     };
 
-    customBackend.default.init(cfg);
+    return customBackend.default.init(cfg);
 }
