@@ -51,7 +51,7 @@ let db;
 /** @type {FileSystemDirectoryHandle} */
 let rootDirHandle;
 
-function init() {
+async function init() {
     repoFolder = get(config).repo_folder;
 
     if(!repoFolder) {
@@ -89,6 +89,29 @@ function init() {
             ddoc: fields.join('-'), 
         };
     }).forEach(index => createDbIndex(index));
+
+    console.log('Using local CMS backend');
+
+    return local;
+}
+
+/**
+ * A helper to configure the login page.
+ * 
+ * This should only be exported if the backend requires some sort of login / user interaction
+ * to set up.
+ * ***
+ * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
+ */
+async function getLoginConfig() {
+    const loginConfig = {
+        title: 'Local Backend Enabled',
+        message: 'Select the local project directory to continue.',
+        button: 'Select Project Directory',
+        action: selectDirectory
+    };
+
+    return loginConfig;
 }
 
 async function createDbIndex(index) {
@@ -549,7 +572,7 @@ async function replacePreviewLinks(rawValue) {
 
 const local = {
     init,
-    selectDirectory,
+    getLoginConfig,
     getFiles,
     saveFile,
     deleteFiles,

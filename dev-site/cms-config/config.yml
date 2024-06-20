@@ -1,8 +1,8 @@
 backend:
   name: custom
   branch: master
-  file: 'backend/example.js' # Relative to the /cms-config path
 local_backend: true # Set to 'true' to override the backend with the local backend
+  file: 'backend/example.js' # The custom backend file. Relative to the /cms-config path
 
 custom_actions: 'cms-actions.js' # Relative to the /cms-config path
 repo_folder: snow-cms # The root folder of the repository

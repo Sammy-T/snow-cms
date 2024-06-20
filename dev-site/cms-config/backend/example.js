@@ -56,6 +56,50 @@ async function init(cfg) {
 
     // The `get()` function can be used to read `config.yml` info from the `config` store. 
     console.log(`Using custom CMS backend '${get(config).backend.file}'`);
+
+    return example;
+}
+
+/**
+ * A helper to configure the login page.
+ * 
+ * This should only be exported if the backend requires some sort of login / user interaction
+ * to set up.
+ * ***
+ * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
+ */
+async function getLoginConfig() {
+    /**
+     * The action to perform on login form submission.
+     * @param {FormData} data 
+     */
+    async function loginAction(data) {
+        let msg = [];
+
+        for(const [key, value] of data.entries()) {
+            msg.push(`${key}: ${value}`);
+        }
+
+        console.log(msg.join('\n'));
+
+        // Configure this backend in the backend store.
+        backend.set(example);
+    }
+
+    //// TODO: type
+    const loginConfig = {
+        title: 'Example Backend Enabled',
+        message: 'This is an example login.',
+        button: 'Log in',
+        fields: {
+            username: 'text',
+            email: 'email',
+            password: 'password'
+        },
+        action: loginAction
+    };
+
+    return loginConfig;
 }
 
 /**
@@ -224,6 +268,7 @@ async function replacePreviewLinks(rawValue) {
 
 const example = {
     init,
+    // getLoginConfig,
     getFiles,
     saveFile,
     deleteFiles,

@@ -26,6 +26,24 @@ async function init() {
 }
 
 /**
+ * A helper to configure the login page.
+ * 
+ * This should only be exported if the backend requires some sort of login / user interaction
+ * to set up.
+ * ***
+ * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
+ */
+async function getLoginConfig() {
+    const loginConfig = {
+        title: 'GitHub Log in',
+        button: 'Log in with GitHub',
+        action: async () => {console.log('Needs to be implemented.')} //// TODO: 
+    };
+
+    return loginConfig;
+}
+
+/**
  * Gets the docs corresponding to the content files within the given collection.
  * @param {String} collectionName 
  * @returns {Promise<object[]>} A promise for an array of the documents.
