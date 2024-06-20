@@ -48,7 +48,10 @@ async function init(cfg) {
     parseLinks = parseLinksFunc;
     fileOpen = fileOpenFunc;
 
-    // Configure this backend in the backend store
+    // Configure this backend in the backend store.
+    //
+    // IMPORTANT: Set this only when the backend has finished initializing
+    // and is ready to interact with the CMS.
     backend.set(example);
 
     // The `get()` function can be used to read `config.yml` info from the `config` store. 
