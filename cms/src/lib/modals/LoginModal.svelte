@@ -13,6 +13,8 @@
 
     let loading;
 
+    let attempts = 2;
+
     $: if($config) initBackend();
 
     async function submitLogin(event) {
@@ -27,6 +29,8 @@
 
     async function initBackend() {
         try {
+            if(attempts <= 0) return;
+
             if(!backendName) throw new Error('Missing backend name');
             
             switch(backendName) {
@@ -50,7 +54,12 @@
 
             if(loadingBackend.getLoginConfig) loginConfig = await loadingBackend.getLoginConfig();
         } catch(error) {
-            console.error('Unable to init backend.', error);
+            console.error('Error initializing backend.', error);
+
+            attempts--;
+            console.log('Re-trying init. Attempts left ', attempts);
+
+            initBackend();
         }
     }
 </script>
