@@ -12,9 +12,17 @@ let exampleDb = [];
 
 let docId = 0;
 
-//// TODO: Implement GH interaction
+const cmsUrl = `${window.location.origin}${window.location.pathname}`;
+
+const storagePrefix = 'SNOW_CMS:';
+
+const STORAGE_KEYS = {
+    state: `${storagePrefix}:GH_AUTH:STATE`
+};
+
 /**
  * Initializes the backend.
+ * @returns The backend.
  */
 async function init() {
     //// TODO: Configure this backend in the backend store
@@ -34,10 +42,35 @@ async function init() {
  * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
  */
 async function getLoginConfig() {
+    /**
+     * The action to perform on login form submission.
+     * @param {FormData} data 
+     */
+    async function loginAction(data) {
+        const url = new URL('https://github.com/login/oauth/authorize');
+
+        /**
+         * The web flow's auth state.
+         * 
+         * @see {@link https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app#using-the-web-application-flow-to-generate-a-user-access-token}
+         */
+        const state = Math.random().toString(36).substring(2);
+
+        const params = url.searchParams;
+        params.set('client_id', get(config).backend.client_id);
+        params.set('redirect_uri', cmsUrl);
+        params.set('state', state);
+
+        localStorage.setItem(STORAGE_KEYS.state, state);
+
+        // Redirect to the GitHub auth url
+        window.location.assign(url.href);
+    }
+
     const loginConfig = {
         title: 'GitHub Log in',
         button: 'Log in with GitHub',
-        action: async () => {console.log('Needs to be implemented.')} //// TODO: 
+        action: loginAction
     };
 
     return loginConfig;
