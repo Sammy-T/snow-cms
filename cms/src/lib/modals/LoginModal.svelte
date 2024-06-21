@@ -1,4 +1,5 @@
 <script>
+    import Warning from '$lib/toasts/Warning.svelte';
     import local from '$lib/backends/local';
     import github from '$lib/backends/github';
     import { backend, config } from '$lib/stores';
@@ -6,6 +7,7 @@
 
     $: backendName = ($config?.local_backend) ? 'local' : $config?.backend?.name;
 
+    let backendInit;
     let loadingBackend;
     let loginConfig;
 
@@ -19,7 +21,7 @@
 
             loading = loginConfig.action(formData);
         } catch(error) {
-            console.error('Unable to submit login.', error);
+            console.error('Error logging in.', error);
         }
     }
 
@@ -29,20 +31,22 @@
             
             switch(backendName) {
                 case 'local':
-                    loadingBackend = await local.init();
+                    backendInit = local.init();
                     break;
                 
                 case 'github':
-                    loadingBackend = await github.init();
+                    backendInit = github.init();
                     break;
                 
                 case 'custom':
-                    loadingBackend = await loadCustomBackend(config, backend);
+                    backendInit = loadCustomBackend(config, backend);
                     break;
                 
                 default:
                     throw new Error(`Unsupported backend: ${backendName}`);
             }
+
+            loadingBackend = await backendInit;
 
             if(loadingBackend.getLoginConfig) loginConfig = await loadingBackend.getLoginConfig();
         } catch(error) {
@@ -82,3 +86,11 @@
         </footer>
     </article>
 </dialog>
+
+{#await backendInit catch error}
+    <Warning msg="Error initializing backend." details={error.message} />
+{/await}
+
+{#await loading catch error}
+    <Warning msg="Error logging in." details={error.message} />
+{/await}

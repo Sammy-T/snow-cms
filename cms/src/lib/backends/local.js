@@ -51,6 +51,10 @@ let db;
 /** @type {FileSystemDirectoryHandle} */
 let rootDirHandle;
 
+/**
+ * Initializes the backend.
+ * @returns The backend.
+ */
 async function init() {
     repoFolder = get(config).repo_folder;
 

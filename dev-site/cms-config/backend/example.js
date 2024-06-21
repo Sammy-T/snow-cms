@@ -37,6 +37,7 @@ let docId = 0;
 /**
  * Initializes the backend.
  * @param {*} cfg - The backend config object containing exposed stores and functions.
+ * @returns The backend.
  */
 async function init(cfg) {
     const { configStore, backendStore, getStoreValueFunc, parseLinksFunc, fileOpenFunc } = cfg;
