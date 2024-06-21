@@ -2,6 +2,7 @@ import { config, backend } from '$stores';
 import { get } from 'svelte/store';
 import { parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
+import { Octokit } from '@octokit/core';
 
 /** 
  * An array used to emulate an example database for this backend.
@@ -20,13 +21,69 @@ const STORAGE_KEYS = {
     state: `${storagePrefix}:GH_AUTH:STATE`
 };
 
+let octokit;
+
 /**
  * Initializes the backend.
  * @returns The backend.
  */
 async function init() {
-    //// TODO: Configure this backend in the backend store
-    // backend.set(github);
+    const params = new URLSearchParams(window.location.search);
+
+    const code = params.get('code');
+    const receivedState = params.get('state');
+
+    const state = localStorage.getItem(STORAGE_KEYS.state);
+
+    if(code && state) {
+        if(receivedState === state) {
+            console.log('Valid auth state');
+
+            /**
+             * Clear the params from the location 
+             * by replacing the history state.
+             * 
+             * (This method avoids a page reload.)
+             */
+            history.replaceState({}, '', cmsUrl);
+
+            const backendCfg = get(config).backend;
+
+            const apiRoot = backendCfg.api_root ?? window.location.origin;
+            const authEndpoint = backendCfg.auth_endpoint ?? '/api/github/oauth/token';
+
+            const data = { code };
+
+            // Exchange code for token
+            const resp = await fetch(`${apiRoot}${authEndpoint}`, {
+                method: 'post',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const respJson = await resp.json();
+            
+            if(!resp.ok) throw new Error(respJson.error ?? 'Token error');
+
+            const { authentication } = respJson;
+            console.log('authentication', authentication); //// TODO:
+
+            octokit = new Octokit({ auth: authentication.token });
+
+            //// TODO: TEMP
+            const { data: { login } } = await octokit.request("GET /user");
+            console.log(`Hi ${login}`);
+
+            // Configure this backend in the backend store
+            backend.set(github);
+        } else {
+            localStorage.removeItem(STORAGE_KEYS.state);
+
+            throw new Error('Invalid auth state');
+        }
+    }
 
     console.log(`Using GitHub CMS backend`);
 
