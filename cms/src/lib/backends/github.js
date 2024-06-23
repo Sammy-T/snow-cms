@@ -21,6 +21,7 @@ const STORAGE_KEYS = {
     state: `${storagePrefix}:GH_AUTH:STATE`
 };
 
+/** @type {Octokit} */
 let octokit;
 
 /**
@@ -28,12 +29,25 @@ let octokit;
  * @returns The backend.
  */
 async function init() {
+    const backendCfg = get(config).backend;
+
+    if(!backendCfg.repo) throw new Error(`Missing backend 'repo' config.`);
+    if(!backendCfg.app_name) throw new Error(`Missing backend 'app_name' config.`);
+
     const params = new URLSearchParams(window.location.search);
 
+    const setupAction = params.get('setup_action');
     const code = params.get('code');
     const receivedState = params.get('state');
 
     const state = localStorage.getItem(STORAGE_KEYS.state);
+
+    // If the page was redirected to after a GitHub installation,
+    // perform the login action automatically.
+    if(setupAction) {
+        loginAction(null);
+        return;
+    }
 
     if(code && state) {
         if(receivedState === state) {
@@ -46,8 +60,6 @@ async function init() {
              * (This method avoids a page reload.)
              */
             history.replaceState({}, '', cmsUrl);
-
-            const backendCfg = get(config).backend;
 
             const apiRoot = backendCfg.api_root ?? window.location.origin;
             const authEndpoint = backendCfg.auth_endpoint ?? '/api/github/oauth/token';
@@ -68,13 +80,30 @@ async function init() {
             if(!resp.ok) throw new Error(respJson.error ?? 'Token error');
 
             const { authentication } = respJson;
-            console.log('authentication', authentication); //// TODO:
 
             octokit = new Octokit({ auth: authentication.token });
 
-            //// TODO: TEMP
-            const { data: { login } } = await octokit.request("GET /user");
-            console.log(`Hi ${login}`);
+            // Request the user's installations
+            const { data: { total_count: total, installations } } = await octokit.request('GET /user/installations', {
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+
+            const appSlug = backendCfg.app_name.replaceAll(' ', '-').toLowerCase();
+
+            if(total <= 0) {
+                installApp(appSlug);
+                return;
+            }
+
+            // Check if the user has installed the app
+            const installed = installations.find(installation => installation.app_slug === appSlug);
+
+            if(!installed) {
+                installApp(appSlug);
+                return;
+            }
 
             // Configure this backend in the backend store
             backend.set(github);
@@ -91,6 +120,20 @@ async function init() {
 }
 
 /**
+ * A helper to redirect to the GitHub install page corresponding to the 
+ * specified app slug.
+ * 
+ * @see {@link https://docs.github.com/en/apps/sharing-github-apps/sharing-your-github-app#sharing-your-github-app-via-an-install-link}
+ * @param {String} appSlug - The app name with spaces replaced with `-`.
+ */
+function installApp(appSlug) {
+    const url = new URL(`https://github.com/apps/${appSlug}/installations/new`);
+
+    // Redirect to GitHub app installation
+    window.location.assign(url.href);
+}
+
+/**
  * A helper to configure the login page.
  * 
  * This should only be exported if the backend requires some sort of login / user interaction
@@ -99,31 +142,6 @@ async function init() {
  * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
  */
 async function getLoginConfig() {
-    /**
-     * The action to perform on login form submission.
-     * @param {FormData} data 
-     */
-    async function loginAction(data) {
-        const url = new URL('https://github.com/login/oauth/authorize');
-
-        /**
-         * The web flow's auth state.
-         * 
-         * @see {@link https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app#using-the-web-application-flow-to-generate-a-user-access-token}
-         */
-        const state = Math.random().toString(36).substring(2);
-
-        const params = url.searchParams;
-        params.set('client_id', get(config).backend.client_id);
-        params.set('redirect_uri', cmsUrl);
-        params.set('state', state);
-
-        localStorage.setItem(STORAGE_KEYS.state, state);
-
-        // Redirect to the GitHub auth url
-        window.location.assign(url.href);
-    }
-
     const loginConfig = {
         title: 'GitHub Log in',
         button: 'Log in with GitHub',
@@ -131,6 +149,31 @@ async function getLoginConfig() {
     };
 
     return loginConfig;
+}
+
+/**
+* The action to perform on login form submission.
+* @param {FormData} data 
+*/
+async function loginAction(data) {
+    const url = new URL('https://github.com/login/oauth/authorize');
+
+    /**
+     * The web flow's auth state.
+     * 
+     * @see {@link https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app#using-the-web-application-flow-to-generate-a-user-access-token}
+     */
+    const state = Math.random().toString(36).substring(2);
+
+    const params = url.searchParams;
+    params.set('client_id', get(config).backend.client_id);
+    params.set('redirect_uri', cmsUrl);
+    params.set('state', state);
+
+    localStorage.setItem(STORAGE_KEYS.state, state);
+
+    // Redirect to the GitHub auth url
+    window.location.assign(url.href);
 }
 
 /**
