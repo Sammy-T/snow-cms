@@ -1,8 +1,10 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
-import { parseFileType, parseLinks } from '$lib/util';
+import { getContents, parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import { Octokit } from '@octokit/core';
+import { getRepoPath } from './util/github/request';
+import yaml from 'js-yaml';
 
 /** 
  * An array used to emulate an example database for this backend.
@@ -177,15 +179,62 @@ async function loginAction(data) {
 }
 
 /**
+ * Constructs a doc.
+ * @param {String} collectionName 
+ * @param {String} folder 
+ * @param {*} entry 
+ */
+function constructDocFromGitHub(collectionName, folder, entry) {
+    const { id, text } = entry.object;
+
+    const [frontMatter, body] = getContents(text);
+    const fields = yaml.load(frontMatter);
+
+    const doc = {
+        _id: id,
+        name: entry.name,
+        collection: collectionName,
+        path: folder,
+        date: fields['date'],
+        raw: text,
+        fields,
+        body
+    };
+
+    return doc;
+}
+
+/**
  * Gets the docs corresponding to the content files within the given collection.
  * @param {String} collectionName 
  * @returns {Promise<object[]>} A promise for an array of the documents.
  */
 async function getFiles(collectionName) {
     try {
-        const compareDoc = (a, b) => b.date.getTime() - a.date.getTime();
+        const cfg = get(config);
 
-        const docs = exampleDb.filter(doc => doc.collection === collectionName).sort(compareDoc) ?? [];
+        const collection = cfg.collections.find(collection => collection.name === collectionName);
+        const { repo, branch } = cfg.backend;
+
+        const [ owner, repoName ] = repo.split('/');
+        const path = `${branch}:${collection.folder}`;
+
+        // Get the collection's files from the repository
+        const { repository } = await getRepoPath(octokit, owner, repoName, path);
+        if(!repository) throw new Error('Error getting repo path');
+
+        const docs = [];
+
+        // Construct the docs
+        repository.object?.entries.forEach(entry => {
+            // Ignore entries with names beginning with '.' or '_'.
+            if(/^[\._]/.test(entry.name)) return;
+
+            docs.push(constructDocFromGitHub(collectionName, collection.folder, entry));
+        });
+
+        // Sort by date
+        docs.sort((a, b) => b.date.getTime() - a.date.getTime());
 
         return docs;
     } catch(error) {
