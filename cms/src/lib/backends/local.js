@@ -1,6 +1,6 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
-import { parseFileType, parseLinks } from '$lib/util';
+import { getContents, parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import PouchDB from 'pouchdb-core';
 import PouchDBIdb from 'pouchdb-adapter-idb';
@@ -128,7 +128,7 @@ async function createDbIndex(index) {
 }
 
 /**
- * Constructs a PouchDB compatible doc from the provided file and its collection name.
+ * Constructs a PouchDB compatible doc.
  * @param {String} collectionName 
  * @param {*} file
  */
@@ -197,29 +197,6 @@ async function findExisting(doc) {
     } catch(error) {
         console.warn('Existing doc error', error);
     }
-}
-
-/**
- * Splits front matter prefixed text into a string array containing front matter and body.
- * @param {String} text 
- * @returns {Array<String>} `[frontmatter, body]`
- */
-function getContents(text) {
-    // If there's no beginning frontmatter delimiter, 
-    // return an invalid date and the passed in text.
-    if(!/^---(\r?\n)/.test(text.trim())) {
-        return [`date: 0001-01-01T12:00:00-00:00`, text.trim()];
-    }
-
-    const fmToken = '---';
-    const tmpToken = '{#{br}#}';
-    
-    // Replace the first two '---' front matter delimiters.
-    // I'm not using `replaceAll` to preserve any remaining markdown horizontal rules.
-    const marked = text.trim().replace(fmToken, tmpToken).replace(fmToken, tmpToken);
-    const contents = marked.split(tmpToken).filter(m => m.length > 0).map(content => content.trim());
-
-    return contents;
 }
 
 /**

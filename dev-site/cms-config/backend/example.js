@@ -20,6 +20,9 @@ let backend;
 let get;
 
 /** @type {function(String): String[]} */
+let getContents;
+
+/** @type {function(String): String[]} */
 let parseLinks;
 
 /** @type {function(Object | Object[]): Promise<import('browser-fs-access').FileWithHandle>} */
@@ -36,16 +39,17 @@ let docId = 0;
 
 /**
  * Initializes the backend.
- * @param {*} cfg - The backend config object containing exposed stores and functions.
+ * @param {*} cfg - The backend config object containing exposed stores and functions. See: cms/src/lib/util.js
  * @returns The backend.
  */
 async function init(cfg) {
-    const { configStore, backendStore, getStoreValueFunc, parseLinksFunc, fileOpenFunc } = cfg;
+    const { configStore, backendStore, getStoreValueFunc, getContentsFunc, parseLinksFunc, fileOpenFunc } = cfg;
 
     // Configure the backend's variables
     config = configStore;
     backend = backendStore;
     get = getStoreValueFunc;
+    getContents = getContentsFunc;
     parseLinks = parseLinksFunc;
     fileOpen = fileOpenFunc;
 

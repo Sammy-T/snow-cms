@@ -226,6 +226,29 @@ export function constructDoc(collection, entryData) {
 }
 
 /**
+ * Splits front matter prefixed text into a string array containing front matter and body.
+ * @param {String} text 
+ * @returns {String[]} `[frontmatter, body]`
+ */
+export function getContents(text) {
+    // If there's no beginning frontmatter delimiter, 
+    // return an invalid date and the passed in text.
+    if(!/^---(\r?\n)/.test(text.trim())) {
+        return [`date: 0001-01-01T12:00:00-00:00`, text.trim()];
+    }
+
+    const fmToken = '---';
+    const tmpToken = '{#{br}#}';
+    
+    // Replace the first two '---' front matter delimiters.
+    // I'm not using `replaceAll` to preserve any remaining markdown horizontal rules.
+    const marked = text.trim().replace(fmToken, tmpToken).replace(fmToken, tmpToken);
+    const contents = marked.split(tmpToken).filter(m => m.length > 0).map(content => content.trim());
+
+    return contents;
+}
+
+/**
  * Finds the MIME type corresponding to the provided extension.
  * @param {String} ext - The extension ex: '.ext'
  * @returns {String} The MIME type
@@ -275,6 +298,7 @@ export async function loadCustomBackend(configStore, backendStore) {
         configStore,
         backendStore,
         getStoreValueFunc: get,
+        getContentsFunc: getContents,
         parseLinksFunc: parseLinks,
         fileOpenFunc: fileOpen
     };
