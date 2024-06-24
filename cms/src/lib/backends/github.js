@@ -276,13 +276,47 @@ async function saveFile(collection, doc) {
  * @param {object[]} docs - The docs to delete.
  */
 async function deleteFiles(docs) {
-    // Revoke the object urls of asset docs.
-    docs.forEach(delDoc => {
-        if(delDoc.url_preview) URL.revokeObjectURL(delDoc.url_preview);
-    });
+    try {
+        const headline = `Delete ${docs.length} file(s)`;
 
-    // Remove the matching docs
-    exampleDb = [...exampleDb.filter(check => docs.every(delDoc => check.id !== delDoc.id))];
+        const changes = {
+            deletions: docs.map(doc => {
+                return { path: `${doc.path}/${doc.name}` }
+            })
+        };
+
+        await updateBranch(headline, changes);
+
+        //// TODO: Delete docs from cache?
+    } catch(error) {
+        console.error('Error deleting files.', error);
+        throw error;
+    }
+}
+
+/**
+ * A helper to update the repository.
+ * @param {String} headline 
+ * @param {*} changes 
+ */
+async function updateBranch(headline, changes) {
+    const cfg = get(config);
+
+    const { repo, branch } = cfg.backend;
+
+    const [ owner, repoName ] = repo.split('/');
+
+    const refName = branch;
+
+    // Retrieve the ref oid
+    const { repository } = await getRefOid(octokit, owner, repoName, refName);
+    if(!repository) throw new Error('Error getting oid');
+
+    const { oid } = repository.ref.target;
+
+    // Create the commit
+    const resp = await createCommit(octokit, repo, branch, headline, oid, changes);
+    if(!resp?.createCommitOnBranch) throw new Error('Error creating commit');
 }
 
 /**
