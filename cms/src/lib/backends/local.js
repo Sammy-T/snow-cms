@@ -1,11 +1,11 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
-import { getContents, parseFileType, parseLinks } from '$lib/util';
+import { parseFileType, parseLinks } from '$lib/util';
+import { constructAssetDocFromFile, constructDocFromFile } from './util/local/doc';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import PouchDB from 'pouchdb-core';
 import PouchDBIdb from 'pouchdb-adapter-idb';
 import PouchDBFind from 'pouchdb-find';
-import yaml from 'js-yaml';
 
 /** 
  * These type definitions illustrate the required properties for content document objects.
@@ -128,61 +128,6 @@ async function createDbIndex(index) {
 }
 
 /**
- * Constructs a PouchDB compatible doc.
- * @param {String} collectionName 
- * @param {*} file
- */
-async function constructDocFromFile(collectionName, file) {
-    let raw;
-
-    try {
-        raw = await file.text();
-    } catch(error) {
-        console.error('Error constructing doc', error);
-        return;
-    }
-
-    const [frontMatter, body] = getContents(raw);
-    const fields = yaml.load(frontMatter);
-
-    const doc = {
-        _id: file.webkitRelativePath,
-        name: file.name,
-        collection: collectionName,
-        date: fields['date'],
-        raw,
-        fields,
-        body,
-        handle: file.handle,
-        directoryHandle: file.directoryHandle,
-    };
-
-    return doc;
-}
-
-/**
- * Constructs a PouchDB compatible doc from the provided asset file.
- * @param {*} file
- */
-function constructAssetDocFromFile(file) {
-    const publicFolder = get(config).public_folder;
-    const url = `${publicFolder}/${file.name}`;
-
-    const doc = {
-        _id: file.webkitRelativePath,
-        name: file.name,
-        date: file.lastModifiedDate,
-        asset: file.type,
-        url,
-        url_preview: url,
-        handle: file.handle,
-        directoryHandle: file.directoryHandle
-    };
-
-    return doc;
-}
-
-/**
  * Searches for an existing doc and updates the `_rev` field
  * of the passed in doc if an existing one is found.
  * @param {*} doc 
@@ -208,7 +153,9 @@ async function selectDirectory() {
 
     const collectionRegexes = {};
 
-    const collections = get(config).collections;
+    const cfg = get(config);
+
+    const collections = cfg.collections;
 
     collections.forEach(collection => {
         const directories = collection.folder.split('/');
@@ -221,7 +168,7 @@ async function selectDirectory() {
         collectionRegexes[collection.name] = new RegExp(pattern, 'i');
     });
 
-    const mediaFolder = get(config).media_folder;
+    const mediaFolder = cfg.media_folder;
     const mediaPath = mediaFolder.split('/').join('\\/');
     const mediaPattern = `\\/?${mediaPath}\\/[^_][\\w-]+\\.\\w+`;
     const mediaRegex = new RegExp(mediaPattern, 'i');
@@ -250,7 +197,7 @@ async function selectDirectory() {
             const isValidMedia = mediaRegex.test(file.webkitRelativePath);
 
             if(isValidMedia) {
-                mediaDocs.push(constructAssetDocFromFile(file));
+                mediaDocs.push(constructAssetDocFromFile(cfg, file));
                 return;
             }
 
@@ -445,7 +392,8 @@ async function uploadMediaFile() {
             handle: saveResp,
         };
 
-        const doc = constructAssetDocFromFile(newFile);
+        // @ts-ignore
+        const doc = constructAssetDocFromFile(get(config), newFile);
 
         // Save the file to the db
         const resp = await db.put(doc);

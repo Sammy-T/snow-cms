@@ -1,6 +1,6 @@
-import { getContents } from "$lib/util";
-import { base64ToBlob, getMimeTypeFromExt } from "../blob";
-import { getRepoFileBlob } from "./request";
+import { getContents } from '$lib/util';
+import { base64ToBlob, getMimeTypeFromExt } from '../blob';
+import { getRepoFileBlob } from './request';
 import yaml from 'js-yaml';
 
 /**
