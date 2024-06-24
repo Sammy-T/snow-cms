@@ -163,7 +163,7 @@ async function deleteFiles(docs) {
     });
 
     // Remove the matching docs
-    exampleDb = [...exampleDb.filter(check => docs.every(delDoc => check.id !== delDoc.id))];
+    exampleDb = [...exampleDb.filter(checkDoc => docs.every(delDoc => checkDoc.id !== delDoc.id))];
 }
 
 /**

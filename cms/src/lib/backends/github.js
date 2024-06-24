@@ -1,19 +1,18 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
-import { getContents, parseFileType, parseLinks } from '$lib/util';
-import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
+import { parseLinks } from '$lib/util';
+import { createCommit, getRefOid, getRepoPath } from './util/github/request';
+import { fileToBase64 } from './util/blob';
+import { constructAssetDocFromGitHub, constructDocFromGitHub } from './util/github/doc';
+import { fileOpen } from 'browser-fs-access';
 import { Octokit } from '@octokit/core';
-import { createCommit, getRefOid, getRepoFileBlob, getRepoPath } from './util/github/request';
-import yaml from 'js-yaml';
 
 /** 
- * An array used to emulate an example database for this backend.
- * ***
- * An actual backend should interact with a real database / API.
+ * A cache to store media docs.
+ * 
+ * This helps public and preview link handling.
  */
-let exampleDb = [];
-
-let docId = 0;
+let mediaCacheDb = [];
 
 const cmsUrl = `${window.location.origin}${window.location.pathname}`;
 
@@ -179,73 +178,6 @@ async function loginAction(data) {
 }
 
 /**
- * Constructs a doc.
- * @param {String} collectionName 
- * @param {String} folder 
- * @param {*} entry 
- */
-function constructDocFromGitHub(collectionName, folder, entry) {
-    const { id, text } = entry.object;
-
-    const [frontMatter, body] = getContents(text);
-    const fields = yaml.load(frontMatter);
-
-    const doc = {
-        _id: id,
-        name: entry.name,
-        collection: collectionName,
-        path: folder,
-        date: fields['date'],
-        raw: text,
-        fields,
-        body
-    };
-
-    return doc;
-}
-
-/**
- * Constructs an asset doc.
- * @param {String} mediaFolder 
- * @param {String} publicFolder 
- * @param {*} entry  
- */
-async function constructAssetDocFromGitHub(mediaFolder, publicFolder, entry) {
-    const [ owner, repoName ] = get(config).backend.repo.split('/');
-
-    const { id, oid } = entry.object;
-
-    const resp = await getRepoFileBlob(octokit, owner, repoName, oid);
-
-    const url = `${publicFolder}/${entry.name}`;
-    let preview = url;
-
-    if(resp.status === 200) {
-        const { content, encoding } = resp.data;
-        const type = entry.extension.replace('.', '');
-
-        try {
-            const dataResp = await fetch(`data:image/${type};${encoding},${content}`);
-            const blob = await dataResp.blob();
-
-            preview = URL.createObjectURL(blob);
-        } catch(error) {
-            console.error('Blob error', error);
-        }
-    }
-
-    const doc = {
-        _id: id,
-        name: entry.name,
-        path: mediaFolder,
-        url,
-        url_preview: preview
-    };
-
-    return doc;
-}
-
-/**
  * Gets the docs corresponding to the content files within the given collection.
  * @param {String} collectionName 
  * @returns {Promise<object[]>} A promise for an array of the documents.
@@ -297,7 +229,7 @@ async function saveFile(collection, doc) {
         const changes = {
             additions: [
                 {
-                    path: `${doc.path}/${doc.name}`,
+                    path: `${collection.folder}/${doc.name}`,
                     contents: btoa(doc.raw) // Convert contents to base64
                 }
             ]
@@ -328,36 +260,17 @@ async function deleteFiles(docs) {
 
         await updateBranch(headline, changes);
 
-        //// TODO: Delete docs from cache?
+        // Revoke the object urls of asset docs.
+        docs.forEach(delDoc => {
+            if(delDoc.url_preview) URL.revokeObjectURL(delDoc.url_preview);
+        });
+
+        // Remove the matching docs from the cache
+        mediaCacheDb = [...mediaCacheDb.filter(checkDoc => docs.every(delDoc => checkDoc.id !== delDoc.id))];
     } catch(error) {
         console.error('Error deleting files.', error);
         throw error;
     }
-}
-
-/**
- * A helper to update the repository.
- * @param {String} headline 
- * @param {*} changes 
- */
-async function updateBranch(headline, changes) {
-    const cfg = get(config);
-
-    const { repo, branch } = cfg.backend;
-
-    const [ owner, repoName ] = repo.split('/');
-
-    const refName = branch;
-
-    // Retrieve the ref oid
-    const { repository } = await getRefOid(octokit, owner, repoName, refName);
-    if(!repository) throw new Error('Error getting oid');
-
-    const { oid } = repository.ref.target;
-
-    // Create the commit
-    const resp = await createCommit(octokit, repo, branch, headline, oid, changes);
-    if(!resp?.createCommitOnBranch) throw new Error('Error creating commit');
 }
 
 /**
@@ -385,12 +298,20 @@ async function getMediaFiles() {
             // Ignore entries with names beginning with '.' or '_'.
             if(/^[\._]/.test(entry.name)) return;
 
-            docPromises.push(constructAssetDocFromGitHub(media_folder, public_folder, entry));
+            const promise = constructAssetDocFromGitHub(octokit, cfg, media_folder, public_folder, entry);
+
+            docPromises.push(promise);
         });
 
         const docs = await Promise.all(docPromises);
 
-        //// TODO: Update cache
+        // Revoke the object urls for any previous asset docs.
+        mediaCacheDb.forEach(delDoc => {
+            if(delDoc.url_preview) URL.revokeObjectURL(delDoc.url_preview);
+        });
+
+        // Update the cache
+        mediaCacheDb = docs;
 
         return docs;
     } catch(error) {
@@ -405,6 +326,8 @@ async function getMediaFiles() {
  */
 async function uploadMediaFile() {
     try {
+        const mediaFolder = get(config).media_folder;
+
         const openOpts = {
             mimeTypes: ['image/*'],
             description: 'Image Files',
@@ -413,28 +336,21 @@ async function uploadMediaFile() {
         // Select a file to upload.
         const file = await fileOpen(openOpts);
 
-        // Create an object url for the file.
-        //
-        // In an actual backend, you would want to appropriately
-        // process / upload the file.
-        const url = URL.createObjectURL(file);
+        // Convert the contents to base64
+        const fileContents = await fileToBase64(file, true);
 
-        // Construct the doc
-        const doc = {
-            name: file.name,
-            url: `this/is/just/an/example/${file.name}`,
-            url_preview: url
+        const headline = `Update ${file.name}`;
+
+        const changes = {
+            additions: [
+                {
+                    path: `${mediaFolder}/${file.name}`,
+                    contents: fileContents
+                }
+            ]
         };
 
-        // Add additional properties if needed...
-        doc.id = docId;
-        doc.date = new Date();
-        doc.handle = file.handle;
-
-        docId++;
-
-        // Add the doc
-        exampleDb.push(doc);
+        await updateBranch(headline, changes);
     } catch(error) {
         console.error('Upload file error', error);
     }
@@ -454,7 +370,7 @@ async function replacePublicLinks(rawValue) {
         if(links.length === 0) return rawValue;
         
         // Find the docs with matching urls
-        const docs = exampleDb.filter(doc => doc.url && links.includes(doc.url));
+        const docs = mediaCacheDb.filter(doc => doc.url && links.includes(doc.url));
 
         // Replace the public urls
         docs.forEach(doc => {
@@ -482,7 +398,7 @@ async function replacePreviewLinks(rawValue) {
         if(links.length === 0) return rawValue;
         
         // Find the docs with matching urls
-        const docs = exampleDb.filter(doc => doc.url_preview && links.includes(doc.url_preview));
+        const docs = mediaCacheDb.filter(doc => doc.url_preview && links.includes(doc.url_preview));
 
         // Replace the preview urls
         docs.forEach(doc => {
@@ -494,6 +410,31 @@ async function replacePreviewLinks(rawValue) {
         console.error('Error processing preview links', error);
         throw error;
     }
+}
+
+/**
+ * A helper to update the repository.
+ * @param {String} headline 
+ * @param {*} changes 
+ */
+async function updateBranch(headline, changes) {
+    const cfg = get(config);
+
+    const { repo, branch } = cfg.backend;
+
+    const [ owner, repoName ] = repo.split('/');
+
+    const refName = branch;
+
+    // Retrieve the ref oid
+    const { repository } = await getRefOid(octokit, owner, repoName, refName);
+    if(!repository) throw new Error('Error getting oid');
+
+    const { oid } = repository.ref.target;
+
+    // Create the commit
+    const resp = await createCommit(octokit, repo, branch, headline, oid, changes);
+    if(!resp?.createCommitOnBranch) throw new Error('Error creating commit');
 }
 
 const github = {
