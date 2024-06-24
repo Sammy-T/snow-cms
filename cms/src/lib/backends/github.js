@@ -3,7 +3,7 @@ import { get } from 'svelte/store';
 import { getContents, parseFileType, parseLinks } from '$lib/util';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import { Octokit } from '@octokit/core';
-import { getRepoPath } from './util/github/request';
+import { createCommit, getRefOid, getRepoFileBlob, getRepoPath } from './util/github/request';
 import yaml from 'js-yaml';
 
 /** 
@@ -244,28 +244,29 @@ async function getFiles(collectionName) {
 }
 
 /**
- * Alters the provided doc if necessary and saves it.
+ * Saves the provided doc to the repository.
  * @param {*} collection 
  * @param {*} doc 
  * @returns The saved doc.
  */
 async function saveFile(collection, doc) {
-    // Add additional properties to the doc if needed..
-    if(doc.id == null) {
-        doc.id = docId;
-
-        docId++;
-    }
-
-    doc.collection = collection.name;
-    
     try {
-        // Add the doc
-        exampleDb = [...exampleDb.filter(d => d.id !== doc.id), doc];
+        const headline = `Update ${doc.name}`;
+
+        const changes = {
+            additions: [
+                {
+                    path: `${doc.path}/${doc.name}`,
+                    contents: btoa(doc.raw) // Convert contents to base64
+                }
+            ]
+        };
+
+        await updateBranch(headline, changes);
 
         return doc;
     } catch(error) {
-        console.error('Error saving file', error);
+        console.error('Error saving file.', error);
         throw error;
     }
 }
