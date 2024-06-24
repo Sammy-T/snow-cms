@@ -205,6 +205,47 @@ function constructDocFromGitHub(collectionName, folder, entry) {
 }
 
 /**
+ * Constructs an asset doc.
+ * @param {String} mediaFolder 
+ * @param {String} publicFolder 
+ * @param {*} entry  
+ */
+async function constructAssetDocFromGitHub(mediaFolder, publicFolder, entry) {
+    const [ owner, repoName ] = get(config).backend.repo.split('/');
+
+    const { id, oid } = entry.object;
+
+    const resp = await getRepoFileBlob(octokit, owner, repoName, oid);
+
+    const url = `${publicFolder}/${entry.name}`;
+    let preview = url;
+
+    if(resp.status === 200) {
+        const { content, encoding } = resp.data;
+        const type = entry.extension.replace('.', '');
+
+        try {
+            const dataResp = await fetch(`data:image/${type};${encoding},${content}`);
+            const blob = await dataResp.blob();
+
+            preview = URL.createObjectURL(blob);
+        } catch(error) {
+            console.error('Blob error', error);
+        }
+    }
+
+    const doc = {
+        _id: id,
+        name: entry.name,
+        path: mediaFolder,
+        url,
+        url_preview: preview
+    };
+
+    return doc;
+}
+
+/**
  * Gets the docs corresponding to the content files within the given collection.
  * @param {String} collectionName 
  * @returns {Promise<object[]>} A promise for an array of the documents.
@@ -324,7 +365,38 @@ async function updateBranch(headline, changes) {
  * @returns {Promise<object[]>} A promise for an array of the documents.
  */
 async function getMediaFiles() {
-    return exampleDb.filter(doc => doc.url_preview != null);
+    try {
+        const cfg = get(config);
+
+        const { media_folder, public_folder } = cfg;
+        const { repo, branch } = cfg.backend;
+
+        const [ owner, repoName ] = repo.split('/');
+        const path = `${branch}:${cfg.media_folder}`;
+
+        // Get the media files from the repository
+        const { repository } = await getRepoPath(octokit, owner, repoName, path);
+        if(!repository) throw new Error('Error getting repo path');
+
+        const docPromises = [];
+
+        // Construct the docs
+        repository.object?.entries.forEach(entry => {
+            // Ignore entries with names beginning with '.' or '_'.
+            if(/^[\._]/.test(entry.name)) return;
+
+            docPromises.push(constructAssetDocFromGitHub(media_folder, public_folder, entry));
+        });
+
+        const docs = await Promise.all(docPromises);
+
+        //// TODO: Update cache
+
+        return docs;
+    } catch(error) {
+        console.error('Error getting media files', error);
+        throw error;
+    }
 }
 
 /**
