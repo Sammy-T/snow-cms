@@ -8,7 +8,7 @@ import { Octokit } from '@octokit/core';
  * @param {String} path - ex. 'master:path/to/files'
  * @returns 
  */
-function getRepoPath(octokit, repoOwner, repoName, path) {
+export function getRepoPath(octokit, repoOwner, repoName, path) {
   return octokit.graphql(
     `
     query GetRepoPath($repoOwner: String!, $repoName: String!, $path: String!) { 
@@ -47,7 +47,7 @@ function getRepoPath(octokit, repoOwner, repoName, path) {
  * @param {String} path - ex. master:path/to/file.ext
  * @returns 
  */
-function getRepoFile(octokit, repoOwner, repoName, path) {
+export function getRepoFile(octokit, repoOwner, repoName, path) {
   return octokit.graphql(
     `
     query GetRepoFile($repoOwner: String!, $repoName: String!, $path: String!) {
@@ -79,7 +79,7 @@ function getRepoFile(octokit, repoOwner, repoName, path) {
  * @param {String} repoName
  * @param {String} fileSha
  */
-function getRepoFileBlob(octokit, repoOwner, repoName, fileSha) {
+export function getRepoFileBlob(octokit, repoOwner, repoName, fileSha) {
   return octokit.request('GET /repos/{owner}/{repo}/git/blobs/{file_sha}', {
     owner: repoOwner,
     repo: repoName,
@@ -98,7 +98,7 @@ function getRepoFileBlob(octokit, repoOwner, repoName, fileSha) {
  * @param {String} refName 
  * @returns 
  */
-function getRefOid(octokit, owner, name, refName) {
+export function getRefOid(octokit, owner, name, refName) {
   return octokit.graphql(
     `
     query GetRefOid($owner: String!, $name: String!, $refName: String!) {
@@ -127,7 +127,7 @@ function getRefOid(octokit, owner, name, refName) {
  * @param {String} oid 
  * @returns 
  */
-function createRef(octokit, repoId, refName, oid) {
+export function createRef(octokit, repoId, refName, oid) {
   return octokit.graphql(
     `
     mutation CreateRef($repoId: ID!, $refName: String!, $oid: GitObjectID!) {
@@ -148,7 +148,7 @@ function createRef(octokit, repoId, refName, oid) {
  * @param {String} refId 
  * @returns 
  */
-function deleteRef(octokit, refId) {
+export function deleteRef(octokit, refId) {
   return octokit.graphql(
     `
     mutation DeleteRef($refId: ID!) {
@@ -171,7 +171,7 @@ function deleteRef(octokit, refId) {
  * @param {Object} changes
  * @returns 
  */
-function createCommit(octokit, repoNameWithOwner, branchName, headline, expectedHeadOid, changes) {
+export function createCommit(octokit, repoNameWithOwner, branchName, headline, expectedHeadOid, changes) {
   return octokit.graphql(
     `
     mutation CreateCommit($branchName: String!, $repoNameWithOwner: String!, $expectedHeadOid: GitObjectID!, $headline: String!, $changes: FileChanges!) {
@@ -203,7 +203,7 @@ function createCommit(octokit, repoNameWithOwner, branchName, headline, expected
  * @param {String} body 
  * @returns 
  */
-function createPR(octokit, repoId, baseRefName, headRefName, title, body) {
+export function createPR(octokit, repoId, baseRefName, headRefName, title, body) {
   return octokit.graphql(
     `
     mutation CreatePR($repoId: ID!, $baseRefName: String!, $headRefName: String!, $title: String!, $body: String!) {
@@ -240,7 +240,7 @@ function createPR(octokit, repoId, baseRefName, headRefName, title, body) {
  * @param {String} pullRequestId 
  * @returns 
  */
-function mergePR(octokit, pullRequestId) {
+export function mergePR(octokit, pullRequestId) {
   return octokit.graphql(
     `
     mutation MergePR($pullRequestId: ID!) {
@@ -267,7 +267,7 @@ function mergePR(octokit, pullRequestId) {
  * @param {String} label 
  * @returns 
  */
-function getPRsByLabel(octokit, repoName, repoOwner, label) {
+export function getPRsByLabel(octokit, repoName, repoOwner, label) {
   return octokit.graphql(
     `
     query GetPRsByLabel($repoName: String!, $repoOwner: String!, $label: String!) {
@@ -307,7 +307,7 @@ function getPRsByLabel(octokit, repoName, repoOwner, label) {
  * @param {String} labelableId 
  * @returns 
  */
-function addLabel(octokit, labelIds, labelableId) {
+export function addLabel(octokit, labelIds, labelableId) {
   return octokit.graphql(
     `
     mutation AddLabel($labelIds: [ID!]!, $labelableId: ID!) {
@@ -320,17 +320,3 @@ function addLabel(octokit, labelIds, labelableId) {
       labelableId
     });
 }
-
-export {
-  getRepoPath,
-  getRepoFile,
-  getRepoFileBlob,
-  getRefOid,
-  createRef,
-  deleteRef,
-  createCommit,
-  createPR,
-  mergePR,
-  getPRsByLabel,
-  addLabel,
-};
