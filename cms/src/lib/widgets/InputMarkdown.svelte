@@ -6,16 +6,19 @@
     import SelectImageModal from '$lib/modals/md-ext/SelectImageModal.svelte';
     import { selectedCollection, draftEntry, editingEntry, backend } from '$stores';
     import { onMount } from 'svelte';
-    import { Editor, rootCtx, defaultValueCtx, commandsCtx } from '@milkdown/core';
-    import { listener, listenerCtx } from '@milkdown/plugin-listener';
-    import { commonmark, turnIntoTextCommand, wrapInHeadingCommand, toggleStrongCommand, toggleEmphasisCommand, wrapInBulletListCommand, wrapInOrderedListCommand, wrapInBlockquoteCommand, insertHrCommand, toggleLinkCommand, insertImageCommand } from '@milkdown/preset-commonmark';
-    import { nord } from '@milkdown/theme-nord';
-    import { getHTML, replaceAll } from '@milkdown/utils';
 
     export let name;
     export let label;
     export let value = '';
     export let required = true;
+
+    // [Imported from Milkdown]
+    let Editor, rootCtx, defaultValueCtx, commandsCtx;
+    let listener, listenerCtx;
+    let commonmark, turnIntoTextCommand, wrapInHeadingCommand, toggleStrongCommand, toggleEmphasisCommand, wrapInBulletListCommand, wrapInOrderedListCommand, wrapInBlockquoteCommand, insertHrCommand, toggleLinkCommand, insertImageCommand;
+    let nord;
+    let getHTML, replaceAll;
+    // [end]
 
     let initValue;
 
@@ -27,6 +30,42 @@
     let mdEditorEl;
 
     $: updateDraft(value);
+
+    /**
+     * A helper to dynamically import Milkdown
+     */
+    async function importMilkdown() {
+        const core = await import('@milkdown/core');
+        const pluginListener = await import('@milkdown/plugin-listener');
+        const presetCommonmark = await import('@milkdown/preset-commonmark');
+        const theme = await import('@milkdown/theme-nord');
+        const utils = await import('@milkdown/utils');
+
+        Editor = core.Editor;
+        rootCtx = core.rootCtx;
+        defaultValueCtx = core.defaultValueCtx;
+        commandsCtx = core.commandsCtx;
+
+        listener = pluginListener.listener;
+        listenerCtx = pluginListener.listenerCtx;
+
+        commonmark = presetCommonmark.commonmark;
+        turnIntoTextCommand = presetCommonmark.turnIntoTextCommand;
+        wrapInHeadingCommand = presetCommonmark.wrapInHeadingCommand;
+        toggleStrongCommand = presetCommonmark.toggleStrongCommand;
+        toggleEmphasisCommand = presetCommonmark.toggleEmphasisCommand;
+        wrapInBulletListCommand = presetCommonmark.wrapInBulletListCommand;
+        wrapInOrderedListCommand = presetCommonmark.wrapInOrderedListCommand;
+        wrapInBlockquoteCommand = presetCommonmark.wrapInBlockquoteCommand;
+        insertHrCommand = presetCommonmark.insertHrCommand;
+        toggleLinkCommand = presetCommonmark.toggleLinkCommand;
+        insertImageCommand = presetCommonmark.insertImageCommand;
+
+        nord = theme.nord;
+
+        getHTML = utils.getHTML;
+        replaceAll = utils.replaceAll;
+    }
 
     function updateDraft(updatedValue) {
         const draft = { ...$draftEntry }; // Copy the object
@@ -180,7 +219,9 @@
         updateDraft(value);
     }
 
-    function editor(dom) {
+    async function editor(dom) {
+        await importMilkdown();
+
         Editor.make()
             .config(ctx => {
                 ctx.set(rootCtx, dom);
