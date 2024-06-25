@@ -3,9 +3,6 @@ import { get } from 'svelte/store';
 import { parseFileType, parseLinks } from '$lib/util';
 import { constructAssetDocFromFile, constructDocFromFile } from './util/local/doc';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
-import PouchDB from 'pouchdb-core';
-import PouchDBIdb from 'pouchdb-adapter-idb';
-import PouchDBFind from 'pouchdb-find';
 
 /** 
  * These type definitions illustrate the required properties for content document objects.
@@ -52,10 +49,16 @@ import PouchDBFind from 'pouchdb-find';
  * @property {function(FormData): Promise<void>} action - The action to perfom on login form submission.
  */
 
+// [Imported from PouchDB]
+let PouchDB;
+let PouchDBIdb;
+let PouchDBFind;
+// [end]
+
 /** @type {String} */
 let repoFolder;
 
-/** @type {PouchDB.Database} */
+/** @see PouchDB.Database */
 let db;
 
 /** @type {FileSystemDirectoryHandle} */
@@ -72,6 +75,8 @@ async function init() {
         console.error(`Missing 'repo_folder' config`);
         return;
     }
+
+    await importPouchDB();
 
     // Set up PouchDB
     PouchDB.plugin(PouchDBIdb);
@@ -107,6 +112,15 @@ async function init() {
     console.log('Using local CMS backend');
 
     return local;
+}
+
+/**
+ * A helper to dynamically import PouchDB
+ */
+async function importPouchDB() {
+    PouchDB = (await import('pouchdb-core')).default;
+    PouchDBIdb = (await import('pouchdb-adapter-idb')).default;
+    PouchDBFind = (await import('pouchdb-find')).default;
 }
 
 /**
@@ -424,7 +438,7 @@ async function findDocsWithUrls(urlType, urls) {
 
     // Find the docs with the matching public / preview url(s)
     urls.forEach(url => {
-        /** @type {PouchDB.Find.FindRequest} */
+        /** @see PouchDB.Find.FindRequest */
         const query = {};
 
         if(urlType === 'public') {
