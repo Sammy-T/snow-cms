@@ -15,14 +15,10 @@ async function onDelete(docs) {
 }
 
 /**
- * Overrides the default `logout` behavior
- * when the navbar's `exit` item is clicked.
- * 
- * If this function is not included in the export,
- * the CMS will default to `back` navigation.
+ * Triggered before logging out
  */
-function logout() {
-    console.log(`CMS Action 'logout'`);
+async function onLogout() {
+    console.log(`CMS Action 'on logout'`);
 }
 
 /**
@@ -31,7 +27,7 @@ function logout() {
 const actions = {
     onSave,
     // onDelete,
-    // logout
+    // onLogout
 };
 
 export default actions;

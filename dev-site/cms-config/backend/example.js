@@ -271,6 +271,17 @@ async function replacePreviewLinks(rawValue) {
     }
 }
 
+/**
+ * Overrides the default `logout` behavior
+ * when the navbar's `exit` item is clicked.
+ * 
+ * If this function is not included in the export,
+ * the CMS will default to `back` navigation.
+ */
+async function logout() {
+    console.log('Place your custom logout behavior in `logout()`');
+}
+
 const example = {
     init,
     // getLoginConfig,
@@ -280,7 +291,8 @@ const example = {
     getMediaFiles,
     uploadMediaFile,
     replacePublicLinks,
-    replacePreviewLinks
+    replacePreviewLinks,
+    logout
 };
 
 export default example;

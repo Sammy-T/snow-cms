@@ -2,7 +2,7 @@
     import textBoxMult from '$assets/text-box-multiple.svg?raw';
     import folderMultImage from '$assets/folder-multipe-image.svg?raw';
     import logoutIc from '$assets/logout.svg?raw';
-    import { cmsActions } from '$lib/stores';
+    import { backend, cmsActions } from '$lib/stores';
     import { createEventDispatcher } from 'svelte';
 
     const dispatch = createEventDispatcher();
@@ -16,10 +16,13 @@
         event.currentTarget.blur();
     }
 
-    function logout() {
-        // If there's a custom 'logout' action defined, use it.
+    async function logout() {
+        // If there's a custom 'on logout' action defined, use it.
+        if($cmsActions?.onLogout) await $cmsActions.onLogout();
+
+        // If there's a backend 'logout' function defined, use it.
         // Otherwise, fall back to 'back' navigation.
-        ($cmsActions?.logout) ? $cmsActions.logout() : history.back();
+        ($backend?.logout) ? await $backend.logout() : history.back();
     }
 </script>
 

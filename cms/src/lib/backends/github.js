@@ -414,6 +414,17 @@ async function replacePreviewLinks(rawValue) {
 }
 
 /**
+ * Overrides the default `logout` behavior
+ * when the navbar's `exit` item is clicked.
+ * 
+ * If this function is not included in the export,
+ * the CMS will default to `back` navigation.
+ */
+async function logout() {
+    console.log('Logging out');
+}
+
+/**
  * A helper to update the repository.
  * @param {String} headline 
  * @param {*} changes 
@@ -447,7 +458,8 @@ const github = {
     getMediaFiles,
     uploadMediaFile,
     replacePublicLinks,
-    replacePreviewLinks
+    replacePreviewLinks,
+    // logout
 };
 
 export default github;
