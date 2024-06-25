@@ -2,6 +2,13 @@
   "name": "snow-cms",
   "version": "1.0.0",
   "description": "A configurable CMS built with Svelte.",
+  "keywords": [],
+  "author": "Sammy-T",
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sammy-T/snow-cms.git"
+  },
   "main": "index.js",
   "type": "module",
   "files": [
@@ -15,9 +22,6 @@
     "build:watch:cms": "vite build --minify false --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "Sammy-T",
-  "license": "ISC",
   "dependencies": {
     "@picocss/pico": "^2.0.6"
   },
