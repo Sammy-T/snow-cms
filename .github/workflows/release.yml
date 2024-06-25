@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  workflow_dispatch: # Allow manual triggering
+  push:
+    tags:
+      - 'v*.*.*' # Trigger on pushing version tags
+
+jobs:
+  # Create a release
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Release
+      uses: softprops/action-gh-release@v2.0.4
+      with:
+        name: ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        draft: true
+        
