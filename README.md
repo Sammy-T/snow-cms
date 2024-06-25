@@ -96,24 +96,30 @@ See [Widgets](#widgets) for information on widget configuration and [dev-site/cm
 
 ## Development
 
-### Install necessary packages:
+### Install pnpm
 
 ```bash
-npm install
+npm install -g pnpm
 ```
 
-### Run the dev server:
+### Install necessary packages
 
 ```bash
-npm run dev
+pnpm install
+```
+
+### Run the dev server
+
+```bash
+pnpm run dev
 ```
 
 Then navigate to `http://localhost:5173/` in your browser to view the dev site.
 
-### Build output files:
+### Build output files
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Built files will be output to the `dist/` directory.
