@@ -92,11 +92,11 @@ import 'snow-cms/dist/index';
 
 #### cms-config/
 
-See [Widgets](#widgets) for information on widget configuration and [dev-site/cms-config](/dev-site/cms-config) for example config files.
+See [Config](#config) for information on configuration as well as [dev-site/cms-config](/dev-site/cms-config) for example config files.
 
 ## Development
 
-### Install pnpm
+### Install [pnpm](https://pnpm.io/)
 
 ```bash
 npm install -g pnpm
@@ -136,7 +136,18 @@ Contains files for running the development server.
 
 *Development server site's photos by [Pixabay](https://www.pexels.com/photo/scenic-view-of-rice-paddy-247599/) and [Simon Berger](https://www.pexels.com/photo/silhouette-of-mountains-1323550/) from Pexels.*
 
-## Widgets
+## Config
+
+See [dev-site/cms-config](/dev-site/cms-config) for example config files.
+
+> [!NOTE]
+> The GitHub backend requires a [GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) to authenticate through and a server-side handler to exchange the access token. 
+> 
+> The GitHub app should be configured with `Callback URL` and `Setup URL` set to the url of the CMS.
+>
+> The server-side handler should exchange the received auth code for a user access token. Using one of the [Oauth App middlewares](https://github.com/octokit/oauth-app.js#middlewares) makes this easy to set up.
+
+### Widgets
 
 Widgets share the following configuration options:
 
@@ -148,7 +159,7 @@ Widgets share the following configuration options:
 > [!IMPORTANT]
 > Each collection must have widgets configured for the names `title`, `date`, `draft`, and `body`.
 
-### Boolean
+#### Boolean
 
 - `widget`: `'boolean'`
 
@@ -165,7 +176,7 @@ Widgets share the following configuration options:
 > If the Boolean Widget's `required` option is set to `true` or isn't specified, 
 > the input's value must be `true` for editor data to submit.
 
-### Number
+#### Number
 
 - `widget`: `'number'`
 - `step`: The amount the value increments / decrements by. (Defaults to `1`.)
@@ -181,7 +192,7 @@ Widgets share the following configuration options:
 }
 ```
 
-### DateTime
+#### DateTime
 
 - `widget`: `'datetime'`
 - `type`: `'datetime-local|date|time'` Which input to display.
@@ -202,7 +213,7 @@ Widgets share the following configuration options:
 > [!NOTE]
 > The corresponding `format` option should be set depending on the `type`.
 
-### Text
+#### Text
 
 - `widget`: `'string|text'` Which input to display. Use `string` for single-line or `text` for multiline.
 
@@ -214,7 +225,7 @@ Widgets share the following configuration options:
 }
 ```
 
-### Markdown
+#### Markdown
 
 - `widget`: `'markdown'`
 
@@ -226,7 +237,7 @@ Widgets share the following configuration options:
 }
 ```
 
-### Hidden
+#### Hidden
 
 - `widget`: `'hidden'`
 - `type`: `'boolean|number|text|datetime-local|date|time'` The type of the input's value.
