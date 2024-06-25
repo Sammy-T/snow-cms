@@ -1,10 +1,15 @@
 backend:
-  name: custom
+  name: custom # Can be 'github' or 'custom'
   branch: master
+  file: 'backend/example.js' # The script to use as a custom backend. Relative to the /cms-config path
+  # repo: owner-name/repo-name
+  # app_name: 'My GitHub App Name' # The GitHub app used with the 'github' backend
+  # client_id: my-client-id # The client id of the GitHub app
+  # api_root: http://localhost:8788 # The root of the api used to exchange the github token
+  # auth_endpoint: /api/github/oauth/token # The api endpoint to exchange the auth code for a github token
 local_backend: true # Set to 'true' to override the backend with the local backend
-  file: 'backend/example.js' # The custom backend file. Relative to the /cms-config path
+custom_actions: 'cms-actions.js' # Configure to include custom actions. Relative to the /cms-config path
 
-custom_actions: 'cms-actions.js' # Relative to the /cms-config path
 repo_folder: snow-cms # The root folder of the repository
 media_folder: 'dev-site/img/uploads' # The repo's media folder
 public_folder: '/img/uploads' # The site's media path (Media location when served online or via dev server)
@@ -13,6 +18,19 @@ collections:
   - name: 'news' # Used in routes, e.g., /admin/collections/blog
     label: 'News' # Used in the UI
     folder: 'dev-site/content/news' # The repo path to the folder where documents are stored
+    create: true # Allow users to create new documents in this collection
+    slug: '{{year}}{{month}}{{day}}-{{slug}}' # Filename template, e.g., YYYY-MM-DD-title
+    extension: 'md' # Only 'md' is supported currently
+    fields: # The fields for each document, usually in front matter
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Publish Date', name: 'date', widget: 'datetime', type: 'date',
+          date_format: 'MM.DD.YYYY', time_format: 'HH:mm', datetime_format: 'MM.DD.YYYY HH:mm' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: true, required: false }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+  
+  - name: 'blog' # Used in routes, e.g., /admin/collections/blog
+    label: 'Blog' # Used in the UI
+    folder: 'dev-site/content/blog' # The repo path to the folder where documents are stored
     create: true # Allow users to create new documents in this collection
     slug: '{{year}}{{month}}{{day}}-{{slug}}' # Filename template, e.g., YYYY-MM-DD-title
     extension: 'md' # Only 'md' is supported currently
