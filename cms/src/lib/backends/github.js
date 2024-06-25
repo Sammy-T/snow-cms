@@ -143,6 +143,7 @@ function installApp(appSlug) {
  * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
  */
 async function getLoginConfig() {
+    /** see LoginConfig at 'cms/src/lib/backends/local.js' */
     const loginConfig = {
         title: 'GitHub Log in',
         button: 'Log in with GitHub',

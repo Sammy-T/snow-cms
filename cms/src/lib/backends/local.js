@@ -42,6 +42,16 @@ import PouchDBFind from 'pouchdb-find';
  * @property {String} url_preview - The url used to preview the asset.
  */
 
+/**
+ * @typedef LoginConfig
+ * @type {object}
+ * @property {String|undefined} title 
+ * @property {String|undefined} message
+ * @property {String|undefined} button - The text displayed by the button.
+ * @property {object|undefined} fields - Fields to include on the login form. `{ inputName: 'inputType' }`
+ * @property {function(FormData): Promise<void>} action - The action to perfom on login form submission.
+ */
+
 /** @type {String} */
 let repoFolder;
 
@@ -108,6 +118,7 @@ async function init() {
  * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
  */
 async function getLoginConfig() {
+    /** @see {LoginConfig} */
     const loginConfig = {
         title: 'Local Backend Enabled',
         message: 'Select the local project directory to continue.',

@@ -91,7 +91,7 @@ async function getLoginConfig() {
         backend.set(example);
     }
 
-    //// TODO: type
+    /** see LoginConfig at 'cms/src/lib/backends/local.js' */
     const loginConfig = {
         title: 'Example Backend Enabled',
         message: 'This is an example login.',
