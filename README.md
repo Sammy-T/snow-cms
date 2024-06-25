@@ -18,9 +18,11 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
   - Hidden
 - Editor Preview layout templates (Using html templates with replacement tags)
 - Editor Preview styles
+- CMS Backends
+  - Local filesystem backend (Changes can be manually committed via your external Git CLI/GUI.)
+  - GitHub backend
+  - Specify your own custom backend
 - Optional hooks into editor actions
-- Local filesystem backend (Changes can be manually committed via your external Git CLI/GUI.)
-- Specify your own custom backend
 - Output Markdown files with YAML front matter
 
 > [!NOTE]
