@@ -151,7 +151,8 @@ async function findExisting(doc) {
 async function selectDirectory() {
     if(!repoFolder) return;
 
-    const collectionRegexes = {};
+    /** @type {Array<{name: string, regex: RegExp}>} */
+    const collectionRegexes = [];
 
     const cfg = get(config);
 
@@ -165,7 +166,7 @@ async function selectDirectory() {
         const collectionPath = directories.join('\\/');
         const pattern = `\\/?${collectionPath}\\/[^_][\\w-]+\\.\\w+`;
 
-        collectionRegexes[collection.name] = new RegExp(pattern, 'i');
+        collectionRegexes.push({ name: collection.name, regex: new RegExp(pattern, 'i') });
     });
 
     const mediaFolder = cfg.media_folder;
@@ -201,12 +202,10 @@ async function selectDirectory() {
                 return;
             }
 
-            for(const name in collectionRegexes) {
-                const isValid = collectionRegexes[name].test(file.webkitRelativePath);
+            const regexEntry = collectionRegexes.find(({name, regex}) => regex.test(file.webkitRelativePath));
 
-                if(isValid) {
-                    docPromises.push(constructDocFromFile(name, file));
-                }
+            if(regexEntry) {
+                docPromises.push(constructDocFromFile(regexEntry.name, file));
             }
         });
 
