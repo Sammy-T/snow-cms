@@ -1,11 +1,11 @@
 import { config, backend } from '$stores';
 import { get } from 'svelte/store';
 import { parseFileType, parseLinks } from '$lib/util';
+import { constructAssetDocFromFile, constructDocFromFile } from './util/local/doc';
 import { directoryOpen, fileOpen, fileSave } from 'browser-fs-access';
 import PouchDB from 'pouchdb-core';
 import PouchDBIdb from 'pouchdb-adapter-idb';
 import PouchDBFind from 'pouchdb-find';
-import yaml from 'js-yaml';
 
 /** 
  * These type definitions illustrate the required properties for content document objects.
@@ -51,7 +51,11 @@ let db;
 /** @type {FileSystemDirectoryHandle} */
 let rootDirHandle;
 
-function init() {
+/**
+ * Initializes the backend.
+ * @returns The backend.
+ */
+async function init() {
     repoFolder = get(config).repo_folder;
 
     if(!repoFolder) {
@@ -89,6 +93,29 @@ function init() {
             ddoc: fields.join('-'), 
         };
     }).forEach(index => createDbIndex(index));
+
+    console.log('Using local CMS backend');
+
+    return local;
+}
+
+/**
+ * A helper to configure the login page.
+ * 
+ * This should only be exported if the backend requires some sort of login / user interaction
+ * to set up.
+ * ***
+ * **IMPORTANT:** If exported, `backend.set()` should not be called in `init()`.
+ */
+async function getLoginConfig() {
+    const loginConfig = {
+        title: 'Local Backend Enabled',
+        message: 'Select the local project directory to continue.',
+        button: 'Select Project Directory',
+        action: selectDirectory
+    };
+
+    return loginConfig;
 }
 
 async function createDbIndex(index) {
@@ -98,61 +125,6 @@ async function createDbIndex(index) {
     } catch(error) {
         console.error('Create index error', error);
     }
-}
-
-/**
- * Constructs a PouchDB compatible doc from the provided file and its collection name.
- * @param {String} collectionName 
- * @param {*} file
- */
-async function constructDocFromFile(collectionName, file) {
-    let raw;
-
-    try {
-        raw = await file.text();
-    } catch(error) {
-        console.error('Error constructing doc', error);
-        return;
-    }
-
-    const [frontMatter, body] = getContents(raw);
-    const fields = yaml.load(frontMatter);
-
-    const doc = {
-        _id: file.webkitRelativePath,
-        name: file.name,
-        collection: collectionName,
-        date: fields['date'],
-        raw,
-        fields,
-        body,
-        handle: file.handle,
-        directoryHandle: file.directoryHandle,
-    };
-
-    return doc;
-}
-
-/**
- * Constructs a PouchDB compatible doc from the provided asset file.
- * @param {*} file
- */
-function constructAssetDocFromFile(file) {
-    const publicFolder = get(config).public_folder;
-    const url = `${publicFolder}/${file.name}`;
-
-    const doc = {
-        _id: file.webkitRelativePath,
-        name: file.name,
-        date: file.lastModifiedDate,
-        asset: file.type,
-        url,
-        url_preview: url,
-        handle: file.handle,
-        directoryHandle: file.directoryHandle
-    };
-
-    return doc;
 }
 
 /**
@@ -173,38 +145,18 @@ async function findExisting(doc) {
 }
 
 /**
- * Splits front matter prefixed text into a string array containing front matter and body.
- * @param {String} text 
- * @returns {Array<String>} `[frontmatter, body]`
- */
-function getContents(text) {
-    // If there's no beginning frontmatter delimiter, 
-    // return an invalid date and the passed in text.
-    if(!/^---(\r?\n)/.test(text.trim())) {
-        return [`date: 0001-01-01T12:00:00-00:00`, text.trim()];
-    }
-
-    const fmToken = '---';
-    const tmpToken = '{#{br}#}';
-    
-    // Replace the first two '---' front matter delimiters.
-    // I'm not using `replaceAll` to preserve any remaining markdown horizontal rules.
-    const marked = text.trim().replace(fmToken, tmpToken).replace(fmToken, tmpToken);
-    const contents = marked.split(tmpToken).filter(m => m.length > 0).map(content => content.trim());
-
-    return contents;
-}
-
-/**
  * Triggers a directory selection dialog then retrieves the files 
  * within the configured collection folder(s) from the selected directory.
  */
 async function selectDirectory() {
     if(!repoFolder) return;
 
-    const collectionRegexes = {};
+    /** @type {Array<{name: string, regex: RegExp}>} */
+    const collectionRegexes = [];
 
-    const collections = get(config).collections;
+    const cfg = get(config);
+
+    const collections = cfg.collections;
 
     collections.forEach(collection => {
         const directories = collection.folder.split('/');
@@ -214,10 +166,10 @@ async function selectDirectory() {
         const collectionPath = directories.join('\\/');
         const pattern = `\\/?${collectionPath}\\/[^_][\\w-]+\\.\\w+`;
 
-        collectionRegexes[collection.name] = new RegExp(pattern, 'i');
+        collectionRegexes.push({ name: collection.name, regex: new RegExp(pattern, 'i') });
     });
 
-    const mediaFolder = get(config).media_folder;
+    const mediaFolder = cfg.media_folder;
     const mediaPath = mediaFolder.split('/').join('\\/');
     const mediaPattern = `\\/?${mediaPath}\\/[^_][\\w-]+\\.\\w+`;
     const mediaRegex = new RegExp(mediaPattern, 'i');
@@ -246,16 +198,14 @@ async function selectDirectory() {
             const isValidMedia = mediaRegex.test(file.webkitRelativePath);
 
             if(isValidMedia) {
-                mediaDocs.push(constructAssetDocFromFile(file));
+                mediaDocs.push(constructAssetDocFromFile(cfg, file));
                 return;
             }
 
-            for(const name in collectionRegexes) {
-                const isValid = collectionRegexes[name].test(file.webkitRelativePath);
+            const regexEntry = collectionRegexes.find(({name, regex}) => regex.test(file.webkitRelativePath));
 
-                if(isValid) {
-                    docPromises.push(constructDocFromFile(name, file));
-                }
+            if(regexEntry) {
+                docPromises.push(constructDocFromFile(regexEntry.name, file));
             }
         });
 
@@ -441,7 +391,8 @@ async function uploadMediaFile() {
             handle: saveResp,
         };
 
-        const doc = constructAssetDocFromFile(newFile);
+        // @ts-ignore
+        const doc = constructAssetDocFromFile(get(config), newFile);
 
         // Save the file to the db
         const resp = await db.put(doc);
@@ -549,7 +500,7 @@ async function replacePreviewLinks(rawValue) {
 
 const local = {
     init,
-    selectDirectory,
+    getLoginConfig,
     getFiles,
     saveFile,
     deleteFiles,

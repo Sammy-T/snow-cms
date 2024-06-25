@@ -30,6 +30,7 @@
     "@milkdown/theme-nord": "^7.3.6",
     "@milkdown/transformer": "^7.3.6",
     "@milkdown/utils": "^7.3.6",
+    "@octokit/core": "^6.1.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "browser-fs-access": "^0.35.0",
     "dayjs": "^1.11.11",
