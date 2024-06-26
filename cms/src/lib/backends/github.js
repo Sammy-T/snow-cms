@@ -67,14 +67,17 @@ async function init() {
 
             const data = { code };
 
-            // Exchange code for token
-            const resp = await fetch(`${apiRoot}${authEndpoint}`, {
+            /** @type {RequestInit} */
+            const opts = {
                 method: 'post',
                 headers: {
                     'content-type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            });
+            };
+
+            // Exchange code for token
+            const resp = await fetch(`${apiRoot}${authEndpoint}`, opts);
 
             const respJson = await resp.json();
             
