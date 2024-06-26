@@ -34,7 +34,7 @@ I created this project because I wanted a CMS with a rich-text markdown widget, 
 ### Installing
 
 ```bash
-TODO: add install command
+npm i snow-cms
 ```
 
 ### Import the CMS into your project
