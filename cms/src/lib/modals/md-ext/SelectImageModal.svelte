@@ -54,7 +54,7 @@
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div class="img-container" class:selected={selected === media}
                     on:click={() => select(media)}>
-                    <img src={media.url_preview} alt="" loading="lazy" />
+                    <img src={media.url_preview} alt="" loading="lazy" crossorigin="use-credentials" />
                     <small>{media.name}</small>
                 </div>
             {/each}
