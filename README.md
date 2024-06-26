@@ -63,6 +63,9 @@ cms-config/                 // The path containing CMS config files. (Must be na
  |-- cms-actions.js         // Additional behavior to hook into editor actions. (Optional)
 ```
 
+> [!NOTE]
+> This example assumes the use of a build system that allows importing css in js. But you should adapt importing of the css and js to your project's build system.
+
 #### cms/index.html
 
 ```html
