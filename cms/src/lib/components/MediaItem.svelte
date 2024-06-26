@@ -16,7 +16,7 @@
 
 <div>
     <input type="checkbox" name="media-select" on:change={onCheckChanged} />
-    <img src={media.url_preview} alt={media.alt} loading="lazy" />
+    <img src={media.url_preview} alt={media.alt} loading="lazy" crossorigin="use-credentials" />
     <small>{media.name}</small>
 </div>
 

@@ -74,7 +74,7 @@
         if(!updatedValue) {
             draft[name] = $selectedCollection?.fields.find(f => f.name === name).label;
         } else if(mdEditor) {
-            draft[name] = getHTML()(mdEditor.ctx);
+            draft[name] = (getHTML()(mdEditor.ctx)).replaceAll('<img ', '<img crossorigin="use-credentials" ');
         }
         
         $draftEntry = draft; // Update the store
