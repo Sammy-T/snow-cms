@@ -239,6 +239,10 @@
             .then(onEditorCreated);
     }
 
+    function initEditor(dom) {
+        editor(dom);
+    }
+
     async function init() {
         if(!$editingEntry) return;
 
@@ -270,7 +274,7 @@
         <MarkdownMenu on:menutexttype={onMenuTextType} on:menuaction={onMenuAction} />
 
         <!-- Milkdown editor container -->
-        <div use:editor />
+        <div use:initEditor />
 
         <LinkEditor bind:this={linkEditor} on:saveurl={onSaveUrl} />
     </div>
