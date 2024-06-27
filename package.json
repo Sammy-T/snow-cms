@@ -1,6 +1,6 @@
 {
   "name": "snow-cms",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A configurable CMS built with Svelte.",
   "keywords": [],
   "author": "Sammy-T",
@@ -20,6 +20,7 @@
     "serve:site": "vite dev-site",
     "build": "vite build -c cms/vite.config.js",
     "build:watch:cms": "vite build --minify false --emptyOutDir -w -c cms/vite.config.js --outDir ../dev-site/cms",
+    "prebuild:watch:cms": "node scripts/copy-config.js",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

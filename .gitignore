@@ -145,3 +145,7 @@ dist
 
 ## Dev site's built files
 dev-site/cms
+
+# Private script files
+scripts/.config/config-dev.yml
+cms-lock.json
