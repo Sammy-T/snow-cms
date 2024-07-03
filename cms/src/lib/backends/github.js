@@ -65,6 +65,8 @@ async function init() {
             const apiRoot = backendCfg.api_root ?? window.location.origin;
             const authEndpoint = backendCfg.auth_endpoint ?? '/api/github/oauth/token';
 
+            const authTokenUrl = `${apiRoot}${authEndpoint}`;
+
             const data = { code };
 
             /** @type {RequestInit} */
@@ -77,8 +79,7 @@ async function init() {
             };
 
             // Exchange code for token
-            const resp = await fetch(`${apiRoot}${authEndpoint}`, opts);
-
+            const resp = await fetch(authTokenUrl, opts);
             const respJson = await resp.json();
             
             if(!resp.ok) throw new Error(respJson.error ?? 'Token error');
@@ -97,6 +98,7 @@ async function init() {
             const appSlug = backendCfg.app_name.replaceAll(' ', '-').toLowerCase();
 
             if(total <= 0) {
+                await deleteToken(authTokenUrl, authentication.token);
                 installApp(appSlug);
                 return;
             }
@@ -105,6 +107,7 @@ async function init() {
             const installed = installations.find(installation => installation.app_slug === appSlug);
 
             if(!installed) {
+                await deleteToken(authTokenUrl, authentication.token);
                 installApp(appSlug);
                 return;
             }
@@ -121,6 +124,25 @@ async function init() {
     console.log(`Using GitHub CMS backend`);
 
     return github;
+}
+
+/**
+ * A helper to delete an auth token.
+ * @param {string} authTokenUrl 
+ * @param {string} token 
+ */
+async function deleteToken(authTokenUrl, token) {
+    /** @type {RequestInit} */
+    const opts = {
+        method: 'delete',
+        headers: {
+            'Authorization': `token ${token}`
+        }
+    };
+
+    const resp = await fetch(authTokenUrl, opts);
+
+    if(!resp.ok) throw new Error('Delete token error');
 }
 
 /**
