@@ -268,7 +268,8 @@ async function getFiles(collectionName) {
             },
             sort: [
                 { date: 'desc' }
-            ]
+            ],
+            limit: 200
         });
 
         return result.docs;
@@ -362,7 +363,8 @@ async function getMediaFiles() {
         const result = await db.find({
             selector: {
                 asset: { $gt: '' }
-            }
+            },
+            limit: 200
         });
 
         return result.docs;
@@ -439,7 +441,7 @@ async function findDocsWithUrls(urlType, urls) {
     // Find the docs with the matching public / preview url(s)
     urls.forEach(url => {
         /** @see PouchDB.Find.FindRequest */
-        const query = {};
+        const query = { limit: 200 };
 
         if(urlType === 'public') {
             query.selector = {
