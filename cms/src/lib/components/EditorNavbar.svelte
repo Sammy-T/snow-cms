@@ -72,7 +72,7 @@
     }
 
     function onBackNav() {
-        window.location.hash = '';
+        history.back()
     }
 
     onMount(() => {
