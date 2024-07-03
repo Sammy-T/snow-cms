@@ -27,14 +27,14 @@
     "@picocss/pico": "^2.0.6"
   },
   "devDependencies": {
-    "@milkdown/core": "^7.3.6",
-    "@milkdown/ctx": "^7.3.6",
-    "@milkdown/plugin-listener": "^7.3.6",
-    "@milkdown/preset-commonmark": "^7.3.6",
-    "@milkdown/prose": "^7.3.6",
-    "@milkdown/theme-nord": "^7.3.6",
-    "@milkdown/transformer": "^7.3.6",
-    "@milkdown/utils": "^7.3.6",
+    "@milkdown/core": "^7.4.0",
+    "@milkdown/ctx": "^7.4.0",
+    "@milkdown/plugin-listener": "^7.4.0",
+    "@milkdown/preset-commonmark": "^7.4.0",
+    "@milkdown/prose": "^7.4.0",
+    "@milkdown/theme-nord": "^7.4.0",
+    "@milkdown/transformer": "^7.4.0",
+    "@milkdown/utils": "^7.4.0",
     "@octokit/core": "^6.1.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "browser-fs-access": "^0.35.0",
@@ -46,7 +46,7 @@
     "pouchdb-adapter-idb": "^8.0.1",
     "pouchdb-core": "^8.0.1",
     "pouchdb-find": "^8.0.1",
-    "svelte": "^4.2.17",
-    "vite": "^5.2.12"
+    "svelte": "^4.2.18",
+    "vite": "^5.3.3"
   }
 }
