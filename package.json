@@ -27,18 +27,18 @@
     "@picocss/pico": "^2.0.6"
   },
   "devDependencies": {
-    "@milkdown/core": "^7.4.0",
-    "@milkdown/ctx": "^7.4.0",
-    "@milkdown/plugin-listener": "^7.4.0",
-    "@milkdown/preset-commonmark": "^7.4.0",
-    "@milkdown/prose": "^7.4.0",
-    "@milkdown/theme-nord": "^7.4.0",
-    "@milkdown/transformer": "^7.4.0",
-    "@milkdown/utils": "^7.4.0",
+    "@milkdown/core": "^7.5.0",
+    "@milkdown/ctx": "^7.5.0",
+    "@milkdown/plugin-listener": "^7.5.0",
+    "@milkdown/preset-commonmark": "^7.5.0",
+    "@milkdown/prose": "^7.5.0",
+    "@milkdown/theme-nord": "^7.5.0",
+    "@milkdown/transformer": "^7.5.0",
+    "@milkdown/utils": "^7.5.0",
     "@octokit/core": "^6.1.2",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "browser-fs-access": "^0.35.0",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "events": "^3.3.0",
     "js-yaml": "^4.1.0",
@@ -46,7 +46,7 @@
     "pouchdb-adapter-idb": "^9.0.0",
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
-    "svelte": "^4.2.18",
-    "vite": "^5.3.3"
+    "svelte": "^4.2.19",
+    "vite": "^5.4.2"
   }
 }
