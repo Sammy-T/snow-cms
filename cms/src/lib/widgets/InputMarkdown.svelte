@@ -203,7 +203,7 @@
         const selection = document.getSelection();
         const selectedEl = selection.focusNode;
 
-        if(!mdEditorEl.contains(selectedEl)) return;
+        if(!mdEditorEl?.contains(selectedEl)) return;
 
         savedSelection = {
             node: selection.focusNode, 
@@ -213,7 +213,7 @@
 
     function onEditorCreated(editor) {
         mdEditor = editor;
-        mdEditorEl = document.querySelector('.milkdown .editor');
+        mdEditorEl = document.querySelector('.milkdown .ProseMirror');
 
         replaceAll(value)(mdEditor.ctx);
         updateDraft(value);
