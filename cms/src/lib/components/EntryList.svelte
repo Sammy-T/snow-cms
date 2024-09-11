@@ -15,9 +15,9 @@
     let deleteAction;
     let entries = [];
     
-    $: updateEntries([$backend, $selectedCollection]);
+    $: if($backend || $selectedCollection) updateEntries();
 
-    async function updateEntries(placeholder) {
+    async function updateEntries() {
         try{
             getFilesResp = $backend?.getFiles($selectedCollection?.name);
             entries = await getFilesResp || [];

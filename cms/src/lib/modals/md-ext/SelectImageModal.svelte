@@ -7,9 +7,9 @@
     let mediaFiles = [];
     let selected;
 
-    $: updateEntries($backend);
+    $: if($backend) updateEntries();
 
-    async function updateEntries(placeholder) {
+    async function updateEntries() {
         const files = await $backend?.getMediaFiles();
         mediaFiles = files || [];
     }

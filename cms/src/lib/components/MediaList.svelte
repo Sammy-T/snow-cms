@@ -14,9 +14,9 @@
     let getFilesResp;
     let mediaFiles = [];
 
-    $: updateEntries($backend);
+    $: if($backend) updateEntries();
 
-    async function updateEntries(placeholder) {
+    async function updateEntries() {
         try {
             getFilesResp = $backend?.getMediaFiles();
             mediaFiles = await getFilesResp || [];

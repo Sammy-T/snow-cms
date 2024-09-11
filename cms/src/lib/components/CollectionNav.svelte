@@ -13,7 +13,7 @@
 </script>
 
 <li>
-    <a href="##placeholder" class="collectionNav" class:selected
+    <a href="##select" class="collectionNav" class:selected
         on:click|preventDefault={selectCollection}>
             {@html textBoxEdit}{label}
     </a>

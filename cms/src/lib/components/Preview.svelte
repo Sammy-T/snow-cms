@@ -17,20 +17,19 @@
     let iframe;
 
     // Update content on collection and draft entry changes
-    $: updateContent([$selectedCollection, $draftEntry]);
+    $: if($selectedCollection || $draftEntry) updateContent();
 
     /**
      * A helper function to initialize iframe contents.
      */
     function onIframeLoaded() {
-        updateContent([$selectedCollection, $draftEntry]);
+        updateContent();
     }
 
     /**
      * Updates the iframe's contents with the draft input values.
-     * @param {*} placeholder - A placeholder to hold the variables that are the reactive triggers
      */
-    function updateContent(placeholder) {
+    function updateContent() {
         if(!iframe?.contentDocument) return;
 
         for(const name in $draftEntry) {
