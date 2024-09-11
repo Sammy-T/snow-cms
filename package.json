@@ -47,6 +47,6 @@
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
     "svelte": "^4.2.19",
-    "vite": "^5.4.2"
+    "vite": "^5.4.4"
   }
 }
