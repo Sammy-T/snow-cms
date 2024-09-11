@@ -9,9 +9,9 @@
 
     const submitted = getContext('submitted');
 
-    $: onDraft([$editingEntry, $draftEntry]);
+    $: if($editingEntry || $draftEntry) onDraft();
 
-    async function onDraft(placeholder) {
+    async function onDraft() {
         if(!entryForm) return;
 
         draftChanged = !(await areEntriesEqual());
@@ -84,7 +84,7 @@
     <ul>
         <li>
             <!-- Back Navigation -->
-            <a href="##placeholder" on:click|preventDefault={onBackNav}>
+            <a href="##back" on:click|preventDefault={onBackNav}>
                 {@html ArrowLeft}
             </a>
         </li>
