@@ -2,11 +2,23 @@
     import { draftEntry, selectedCollection, editingEntry } from '$stores';
     import { onMount } from 'svelte';
 
-    export let name;
-    export let label;
-    export let multiline = false;
-    export let required = true;
-    export let value = '';
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     * @property {Boolean} multiline
+     * @property {Boolean} required
+     * @property {String} value
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        label,
+        multiline = false,
+        required = true,
+        value = '',
+    } = $props();
 
     function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the object
@@ -38,8 +50,8 @@
     {label}
     
     {#if !multiline}
-        <input type="text" id={name} {name} bind:value on:input={updateDraft} {required} />
+        <input type="text" id={name} {name} bind:value oninput={updateDraft} {required} />
     {:else}
-        <textarea id={name} {name} {required} bind:value on:input={updateDraft}></textarea>
+        <textarea id={name} {name} {required} bind:value oninput={updateDraft}></textarea>
     {/if}
 </label>

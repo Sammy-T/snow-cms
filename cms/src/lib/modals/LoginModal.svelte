@@ -5,20 +5,29 @@
     import { backend, config } from '$lib/stores';
     import { loadCustomBackend } from '$lib/util';
 
-    $: backendName = ($config?.local_backend) ? 'local' : $config?.backend?.name;
+    let backendName = $derived(($config?.local_backend) ? 'local' : $config?.backend?.name);
 
-    let backendInit;
-    let loadingBackend;
-    let loginConfig;
+    let backendInit = $state();
+    let loadingBackend = $state();
+    let loginConfig = $state();
 
-    let loading;
+    /** @type {Promise<any>}*/
+    let loading = $state(null);
 
-    let attempts = 2;
+    let attempts = $state(2);
 
-    $: if($config) initBackend();
+    $effect(() => {
+        if(backendName && !backendInit) initBackend();
+    });
 
+    /**
+     * @param {Event} event
+     */
     async function submitLogin(event) {
+        event.preventDefault();
+
         try {
+            // @ts-ignore
             const formData = new FormData(event.target);
 
             loading = loginConfig.action(formData);
@@ -72,7 +81,7 @@
 
         <p>{loginConfig?.message ?? 'Log in to continue.'}</p>
 
-        <form id="login" on:submit|preventDefault={submitLogin}>
+        <form id="login" onsubmit={submitLogin}>
             {#if loginConfig?.fields}
                 {@const fields = Object.entries(loginConfig.fields)}
 

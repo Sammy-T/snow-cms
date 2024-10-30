@@ -5,18 +5,23 @@
     import MediaList from '$lib/components/MediaList.svelte';
     import { config, selectedCollection } from '$stores';
 
-    let view = 'posts';
+    let view = $state('posts');
 
-    $: collections = $config?.collections;
+    let collections = $derived($config?.collections);
 
-    $: if(!$selectedCollection) $selectedCollection = collections?.[0];
+    $effect(() => {
+        if(!$selectedCollection) $selectedCollection = collections?.[0];
+    });
 
-    function onSelectView(event) {
-        view = event.detail;
+    /**
+     * @param {String} selected
+     */
+    function onSelectView(selected) {
+        view = selected;
     }
 </script>
 
-<Navbar on:selectview={onSelectView} />
+<Navbar onselectview={onSelectView} />
 
 <div id="dash" class="page">
     {#if view === 'posts'}

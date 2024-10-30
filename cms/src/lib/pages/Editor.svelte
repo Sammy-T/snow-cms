@@ -14,11 +14,11 @@
     import { setContext } from 'svelte';
     import { constructDoc, parseFormEntry } from '$lib/util';
 
-    const submitted = writable();
+    const submitted = writable(null);
     setContext('submitted', submitted);
 
-    let parsing;
-    let saveAction;
+    let parsing = $state();
+    let saveAction = $state();
 
     const editorInputs = {
         'string': InputText,
@@ -30,9 +30,15 @@
         'hidden': InputHidden
     };
 
+    /**
+     * @param {Event} event
+     */
     async function onEntrySubmit(event) {
+        event.preventDefault();
+        
         const entryData = $editingEntry ? { ...$editingEntry } : { fields: {} };
 
+        // @ts-ignore
         const formData = new FormData(event.target);
         
         for(const [key, value] of formData.entries()) {
@@ -71,18 +77,18 @@
     <section id="inputArea">
         <header>Edit</header>
 
-        <form id="entry-data" on:submit|preventDefault={onEntrySubmit}>
+        <form id="entry-data" onsubmit={onEntrySubmit}>
             {#if $selectedCollection}
                 {#each $selectedCollection.fields as field (field.name)}
-                    {@const component = editorInputs[field.widget]}
+                    {@const Component = editorInputs[field.widget]}
                     {@const value = field?.default}
 
                     {#if field.widget === 'boolean'}
-                        <svelte:component this={component} {...field} checked={value} />
+                        <Component {...field} checked={value} />
                     {:else if field.widget === 'text'}
-                        <svelte:component this={component} {...field} {value} multiline />
+                        <Component {...field} {value} multiline />
                     {:else}
-                        <svelte:component this={component} {...field} {value} />
+                        <Component {...field} {value} />
                     {/if}
                 {/each}
             {/if}

@@ -1,11 +1,21 @@
 <script>
     import { getContext } from 'svelte';
 
+    /**
+     * @typedef {Object} Props
+     * @property {Object} media
+     */
+
+    /** @type {Props} */
+    let { media } = $props();
+
     const selectedMediaFiles = getContext('selectedMediaFiles');
 
-    export let media;
-
+    /**
+     * @param {Event} event
+     */
     function onCheckChanged(event) {
+        // @ts-ignore
         if(event.target.checked) {
             $selectedMediaFiles = [...$selectedMediaFiles, media];
         } else {
@@ -15,7 +25,7 @@
 </script>
 
 <div>
-    <input type="checkbox" name="media-select" on:change={onCheckChanged} />
+    <input type="checkbox" name="media-select" onchange={onCheckChanged} />
     <img src={media.url_preview} alt={media.alt} loading="lazy" crossorigin="use-credentials" />
     <small>{media.name}</small>
 </div>

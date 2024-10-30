@@ -1,18 +1,33 @@
 <script>
-    import { createEventDispatcher, onMount, afterUpdate } from 'svelte';
+    import { onMount } from 'svelte';
 
-    const dispatch = createEventDispatcher();
+    /**
+     * @callback saveUrlFunc
+     * @param {Object} urlOpts
+     */
 
-    let show = false;
+    /**
+     * @typedef {Object} Props
+     * @property {saveUrlFunc} onsaveurl
+     */
 
-    let editor;
-    let urlInput;
+    /** @type {Props} */
+    let { onsaveurl } = $props();
+
+    let show = $state(false);
+
+    let editor = $state();
+    let urlInput = $state();
+
+    $effect(() => {
+        if(show) urlInput.focus();
+    });
 
     export function toggleEditor() {
         const selection = document.getSelection();
         
         if(selection.focusNode.parentElement.localName === 'a'){
-            dispatch('saveurl', {}); // Clear the link
+            onsaveurl({}); // Clear the link
             return;
         }else if(!show) {
             // Show the editor if there's a range selected
@@ -34,7 +49,7 @@
         show = false; // Hide the editor
 
         // Dispatch text and url info for the md editor
-        dispatch('saveurl', { href: url });
+        onsaveurl({ href: url });
     }
 
     function onSelectionChange() {
@@ -50,7 +65,7 @@
         urlInput.value = '';
 
         // Dispatch null to restore selection without toggling a link.
-        dispatch('saveurl', null);
+        onsaveurl(null);
     }
 
     onMount(() => {
@@ -61,15 +76,9 @@
             linkForm.removeEventListener('submit', onSave);
         };
     });
-
-    afterUpdate(() => {
-        if(show) {
-            urlInput.focus();
-        }
-    });
 </script>
 
-<svelte:document on:selectionchange={onSelectionChange} />
+<svelte:document onselectionchange={onSelectionChange} />
 
 <div id="link-editor-container" style:visibility={show ? 'visible' : 'hidden' }>
 

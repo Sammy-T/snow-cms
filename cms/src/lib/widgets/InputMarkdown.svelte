@@ -7,10 +7,21 @@
     import { selectedCollection, draftEntry, editingEntry, backend } from '$stores';
     import { onMount } from 'svelte';
 
-    export let name;
-    export let label;
-    export let value = '';
-    export let required = true;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     * @property {String} value
+     * @property {Boolean} required
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        label,
+        value = '',
+        required = true,
+    } = $props();
 
     // [Imported from Milkdown]
     let Editor, rootCtx, defaultValueCtx, commandsCtx;
@@ -20,16 +31,19 @@
     let getHTML, replaceAll;
     // [end]
 
-    let initValue;
+    let initValue = $state();
+    let prevValue = $state();
 
-    let showImgModal = false;
-    let savedSelection;
+    let showImgModal = $state(false);
+    let savedSelection = $state();
 
-    let linkEditor;
-    let mdEditor;
-    let mdEditorEl;
+    let linkEditor = $state();
+    let mdEditor = $state();
+    let mdEditorEl = $state();
 
-    $: updateDraft(value);
+    $effect(() => {
+        if(value !== prevValue) updateDraft(value);
+    });
 
     /**
      * A helper to dynamically import Milkdown
@@ -78,6 +92,8 @@
         }
         
         $draftEntry = draft; // Update the store
+
+        prevValue = value;
     }
 
     function restoreSelection() {
@@ -97,32 +113,37 @@
         selection.addRange(range); // Restore the selection
     }
 
-    function onSelectImg(event) {
+    /**
+     * @param {Object} selected
+     */
+    function onSelectImg(selected) {
         showImgModal = false;
 
         restoreSelection();
 
-        const { img } = event.detail;
-        if(!img) return;
+        if(!selected) return;
 
         mdEditor.action(ctx => {
             const cmdManager = ctx.get(commandsCtx);
 
             const opts = {
-                alt: img.name,
-                src: img.url_preview
+                alt: selected.name,
+                src: selected.url_preview
             };
 
             cmdManager.call(insertImageCommand.key, opts);
         });
     }
 
-    function onSaveUrl(event) {
+    /**
+     * @param {Object} urlOpts
+     */
+    function onSaveUrl(urlOpts) {
         restoreSelection();
 
-        if(!event.detail) return;
+        if(!urlOpts) return;
 
-        const { href } = event.detail;
+        const { href } = urlOpts;
 
         const selection = document.getSelection();
 
@@ -136,16 +157,17 @@
 
             const opts = {
                 title: selectedText,
-                href
+                href,
             };
 
             cmdManager.call(toggleLinkCommand.key, opts);
         });
     }
 
-    function onMenuTextType(event) {
-        const textType = event.detail;
-
+    /**
+     * @param {String} textType
+     */
+    function onMenuTextType(textType) {
         mdEditor.action(ctx => {
             const cmdManager = ctx.get(commandsCtx);
 
@@ -157,9 +179,10 @@
         });
     }
 
-    function onMenuAction(event) {
-        const action = event.detail;
-
+    /**
+     * @param {String} action
+     */
+    function onMenuAction(action) {
         mdEditor.action(ctx => {
             const cmdManager = ctx.get(commandsCtx);
 
@@ -265,18 +288,18 @@
     });
 </script>
 
-<svelte:document on:selectionchange={onSelectionChange} />
+<svelte:document onselectionchange={onSelectionChange} />
 
 <label class="editorInput" for={name}>
     {label}
 
     <div id="md-editor">
-        <MarkdownMenu on:menutexttype={onMenuTextType} on:menuaction={onMenuAction} />
+        <MarkdownMenu ontexttypeselect={onMenuTextType} onactionselect={onMenuAction} />
 
         <!-- Milkdown editor container -->
-        <div use:initEditor />
+        <div use:initEditor></div>
 
-        <LinkEditor bind:this={linkEditor} on:saveurl={onSaveUrl} />
+        <LinkEditor bind:this={linkEditor} onsaveurl={onSaveUrl} />
     </div>
 
     <input type="hidden" id={name} {name} bind:value {required} />
@@ -289,7 +312,7 @@
 {/await}
 
 {#if showImgModal}
-    <SelectImageModal on:selectimg={onSelectImg} />
+    <SelectImageModal onselectimg={onSelectImg} />
 {/if}
 
 <style>

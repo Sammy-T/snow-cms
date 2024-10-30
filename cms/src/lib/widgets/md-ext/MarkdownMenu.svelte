@@ -7,12 +7,29 @@
     import quote from '$assets/format-quote-close.svg?raw';
     import link from '$assets/link.svg?raw';
     import image from '$assets/image.svg?raw';
-    import { createEventDispatcher, onMount } from 'svelte';
+    import { onMount } from 'svelte';
 
-    const dispatch = createEventDispatcher();
+    /**
+     * @callback actionSelectFunc
+     * @param {String} action
+     */
 
-    let textTypeSelect;
-    let mdEditor;
+    /**
+     * @callback textTypeSelectFunc
+     * @param {String} type
+     */
+
+    /**
+     * @typedef {Object} Props
+     * @property {actionSelectFunc} onactionselect
+     * @property {textTypeSelectFunc} ontexttypeselect
+     */
+
+    /** @type {Props} */
+    let { onactionselect, ontexttypeselect } = $props();
+
+    let textTypeSelect = $state();
+    let mdEditor = $state();
 
     const textTypes = initTextTypes();
 
@@ -27,14 +44,24 @@
         { name: 'image', icon: image }
     ];
 
+    /**
+     * @param {Event} event
+     */
     function actionClicked(event) {
+        event.preventDefault();
+        
+        // @ts-ignore
         const { action } = event.currentTarget.dataset;
-        dispatch('menuaction', action);
+        onactionselect(action);
     }
 
+    /**
+     * @param {Event} event
+     */
     function onTypeSelected(event) {
+        // @ts-ignore
         const type = event.currentTarget.value;
-        dispatch('menutexttype', type);
+        ontexttypeselect(type);
     }
 
     function onSelectionChange() {
@@ -87,14 +114,14 @@
 <svelte:document on:selectionchange={onSelectionChange} />
 
 <div class="editor-menu">
-    <select name="text-type" form="ignore" bind:this={textTypeSelect} on:change={onTypeSelected}>
+    <select name="text-type" form="ignore" bind:this={textTypeSelect} onchange={onTypeSelected}>
         {#each textTypes as type}
             <option value={type.value}>{type.title}</option>
         {/each}
     </select>
 
     {#each actions as action}
-        <button class="secondary" data-action={action.name} on:click|preventDefault={actionClicked}>
+        <button class="secondary" data-action={action.name} onclick={actionClicked}>
             {@html action.icon}
         </button>
     {/each}

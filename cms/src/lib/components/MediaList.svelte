@@ -6,15 +6,13 @@
     import fileUpload from '$assets/file-upload.svg?raw';
     import { backend } from '$stores';
     import { writable } from 'svelte/store';
-    import { setContext } from 'svelte';
+    import { onMount, setContext } from 'svelte';
 
     const selectedMediaFiles = writable([]);
     setContext('selectedMediaFiles', selectedMediaFiles);
 
-    let getFilesResp;
-    let mediaFiles = [];
-
-    $: if($backend) updateEntries();
+    let getFilesResp = $state();
+    let mediaFiles = $state([]);
 
     async function updateEntries() {
         try {
@@ -33,24 +31,29 @@
     async function deleteFiles() {
         try{
             await $backend.deleteFiles($selectedMediaFiles);
+
             $selectedMediaFiles = [];
+            
             updateEntries();
         } catch(error) {
             console.error('Error deleting files', error);
         }
     }
+
+    onMount(() => {
+        updateEntries();
+    });
 </script>
 
 <main>
     <header>
         Media Files
         <div id="listActions">
-            <button class="outline" disabled={$selectedMediaFiles.length === 0} 
-                on:click={deleteFiles}>
+            <button class="outline" disabled={$selectedMediaFiles.length === 0} onclick={deleteFiles}>
                 {@html trashCan}Delete
             </button>
 
-            <button on:click={uploadFile}>
+            <button onclick={uploadFile}>
                 {@html fileUpload}Upload
             </button>
         </div>
@@ -59,7 +62,7 @@
     {#if mediaFiles.length === 0}
         <div id="empty">
             <p>No files found.</p>
-            <button on:click={uploadFile}>{@html fileUpload}Upload a File</button>
+            <button onclick={uploadFile}>{@html fileUpload}Upload a File</button>
         </div>
     {:else}
         <div id="items">

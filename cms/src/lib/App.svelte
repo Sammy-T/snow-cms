@@ -10,7 +10,7 @@
         'editor': Editor
     };
 
-    let currentPage;
+    let CurrentPage = $state();
 
     function updateCurrentPage() {
         const hash = window.location.hash.replace(/#\/?/, '');
@@ -20,7 +20,7 @@
             console.warn(`Page not found: ${hash}`);
             window.location.hash = ''; // Redirect to dashboard
         } else {
-            currentPage = page;
+            CurrentPage = page;
         }
     }
 
@@ -29,9 +29,9 @@
     });
 </script>
 
-<svelte:window on:hashchange={updateCurrentPage} />
+<svelte:window onhashchange={updateCurrentPage} />
 
-<svelte:component this={currentPage} />
+<CurrentPage />
 
 {#if !$backend}
     <LoginModal />
