@@ -2,20 +2,30 @@
     import textBoxEdit from '$assets/text-box-edit.svg?raw';
     import { config, selectedCollection } from '$stores';
 
-    export let name;
-    export let label;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     */
 
-    $: selected = $selectedCollection?.name === name ? 'selected' : '';
+    /** @type {Props} */
+    let { name, label } = $props();
 
-    function selectCollection() {
+    let selected = $derived($selectedCollection?.name === name ? 'selected' : '');
+
+    /**
+     * @param {Event} event
+     */
+    function selectCollection(event) {
+        event.preventDefault();
+
         $selectedCollection = $config.collections.find(collection => collection.name === name);
     }
 </script>
 
 <li>
-    <a href="##select" class="collectionNav" class:selected
-        on:click|preventDefault={selectCollection}>
-            {@html textBoxEdit}{label}
+    <a href="##select" class="collectionNav" class:selected onclick={selectCollection}>
+        {@html textBoxEdit}{label}
     </a>
 </li>
 

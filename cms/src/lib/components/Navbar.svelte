@@ -3,20 +3,42 @@
     import folderMultImage from '$assets/folder-multipe-image.svg?raw';
     import logoutIc from '$assets/logout.svg?raw';
     import { backend, cmsActions } from '$lib/stores';
-    import { createEventDispatcher } from 'svelte';
 
-    const dispatch = createEventDispatcher();
+    /**
+     * @callback selectViewFunc
+     * @param {String} view
+     */
 
-    function selectView(event) {        
+    /**
+     * @typedef {Object} Props
+     * @property {selectViewFunc} onselectview
+     */
+
+    /** @type {Props} */
+    let { onselectview } = $props();
+
+    /**
+     * @param {Event} event
+     */
+    function selectView(event) {  
+        event.preventDefault();
+              
+        // @ts-ignore
         const view = new URL(event.currentTarget.href).hash.replaceAll('#', '');
-        dispatch('selectview', view);
+        onselectview(view);
         
         // Clear focus from the selected link
         // so the tooltip doesn't remain visible.
+        // @ts-ignore
         event.currentTarget.blur();
     }
 
-    async function logout() {
+    /**
+     * @param {Event} event
+     */
+    async function logout(event) {
+        event.preventDefault();
+
         // If there's a custom 'on logout' action defined, use it.
         if($cmsActions?.onLogout) await $cmsActions.onLogout();
 
@@ -29,14 +51,12 @@
 <nav>
     <ul>
         <li>
-            <a href="##posts" data-tooltip="Posts" data-placement="bottom" 
-                on:click|preventDefault={selectView}>
+            <a href="##posts" data-tooltip="Posts" data-placement="bottom" onclick={selectView}>
                 {@html textBoxMult}
             </a>
         </li>
         <li>
-            <a href="##media" data-tooltip="Media Files" data-placement="bottom" 
-                on:click|preventDefault={selectView}>
+            <a href="##media" data-tooltip="Media Files" data-placement="bottom" onclick={selectView}>
                 {@html folderMultImage}
             </a>
         </li>
@@ -44,8 +64,7 @@
 
     <ul>
         <li>
-            <a href="##exit" class="secondary" data-tooltip="Exit"  data-placement="bottom"
-                on:click|preventDefault={logout}>
+            <a href="##exit" class="secondary" data-tooltip="Exit"  data-placement="bottom" onclick={logout}>
                 {@html logoutIc}
             </a>
         </li>

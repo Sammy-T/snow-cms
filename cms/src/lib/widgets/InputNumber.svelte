@@ -2,13 +2,27 @@
     import { draftEntry, editingEntry } from '$stores';
     import { onMount } from 'svelte';
 
-    export let name;
-    export let label;
-    export let value;
-    export let step;
-    export let min;
-    export let max;
-    export let required = true;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     * @property {String} value
+     * @property {String} step
+     * @property {String} min
+     * @property {String} max
+     * @property {Boolean} required
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        label,
+        value,
+        step,
+        min,
+        max,
+        required = true,
+    } = $props();
 
     function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the store object
@@ -34,5 +48,5 @@
 <label class="editorInput" for={name}>
     {label}
 
-    <input type="number" id={name} {name} {step} {min} {max} bind:value on:input={updateDraft} {required} />
+    <input type="number" id={name} {name} {step} {min} {max} bind:value oninput={updateDraft} {required} />
 </label>

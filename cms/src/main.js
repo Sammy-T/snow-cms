@@ -1,4 +1,5 @@
 import './main.css';
+import { mount } from 'svelte';
 import App from './lib/App.svelte';
 
 let app;
@@ -10,8 +11,8 @@ function init() {
     // so make sure we're not adding to an already created app.
     if(targetEl.childElementCount > 0) return;
 
-    app = new App({
-        target: targetEl,
+    app = mount(App, {
+        target: targetEl
     });
 }
 

@@ -2,10 +2,21 @@
     import { draftEntry, selectedCollection, editingEntry } from '$stores';
     import { onMount } from 'svelte';
 
-    export let name;
-    export let label;
-    export let checked = false;
-    export let required = true;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     * @property {Boolean} checked
+     * @property {Boolean} required
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        label,
+        checked = false,
+        required = false,
+    } = $props();
 
     function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the object
@@ -38,7 +49,7 @@
     
     <!-- Attach the checkbox to the 'ignore' form to prevent duplicate data on the 'entry' form -->
     <input type="checkbox" role="switch" id={name} {name} form="ignore" bind:checked 
-        on:change={updateDraft} {required} />
+        onchange={updateDraft} {required} />
     
     <!-- 
         Bind the checkbox value to a hidden input since the checkbox value isn't included in the form data when not checked. 

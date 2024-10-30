@@ -1,23 +1,27 @@
 <script>
     import { config, selectedCollection, draftEntry } from '$stores';
     import { getStyles, loadTemplate, replaceTags } from '$util';
+    import { onMount } from 'svelte';
     import dayjs from 'dayjs';
     import customParseFormat from 'dayjs/plugin/customParseFormat';
 
     dayjs.extend(customParseFormat);
 
-    $: previewName = $selectedCollection?.preview || $config?.previews.default;
-    $: styles = getStyles($config, previewName);
+    let previewName = $derived($selectedCollection?.preview || $config?.previews.default);
+    let styles = $derived(getStyles($config, previewName));
 
-    let template;
-    $: (async () => template = await loadTemplate($config, previewName))();
+    let template = $state();
 
-    $: srcdoc = replaceTags(template, styles);
+    let srcdoc = $derived(replaceTags(template, styles));
 
-    let iframe;
+    let iframe = $state();
 
-    // Update content on collection and draft entry changes
-    $: if($selectedCollection || $draftEntry) updateContent();
+    let draft = $state($state.snapshot($draftEntry));
+
+    $effect(() => {
+        // Update content on draft entry changes
+        if($draftEntry !== draft) updateContent();
+    });
 
     /**
      * A helper function to initialize iframe contents.
@@ -61,10 +65,16 @@
                 element.innerHTML = displayValue; // Update the value's display element
             });
         }
+
+        draft = $draftEntry;
     }
+
+    onMount(async () => {
+        template = await loadTemplate($config, previewName)
+    });
 </script>
 
-<iframe bind:this={iframe} title="Preview" sandbox="allow-same-origin" {srcdoc} on:load={onIframeLoaded}></iframe>
+<iframe bind:this={iframe} title="Preview" sandbox="allow-same-origin" {srcdoc} onload={onIframeLoaded}></iframe>
 
 <style>
     iframe {

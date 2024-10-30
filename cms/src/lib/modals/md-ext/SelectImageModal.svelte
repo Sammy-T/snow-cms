@@ -1,13 +1,22 @@
 <script>
     import { backend } from '$stores';
-    import { onMount, createEventDispatcher } from 'svelte';
+    import { onMount } from 'svelte';
 
-    const dispatch = createEventDispatcher();
+    /**
+     * @callback onSelectImgFunc
+     * @param {Object} selected
+     */
 
-    let mediaFiles = [];
-    let selected;
+    /**
+     * @typedef {Object} Props
+     * @property {onSelectImgFunc} onselectimg
+     */
 
-    $: if($backend) updateEntries();
+    /** @type {Props} */
+    let { onselectimg } = $props();
+
+    let mediaFiles = $state([]);
+    let selected = $state();
 
     async function updateEntries() {
         const files = await $backend?.getMediaFiles();
@@ -18,22 +27,31 @@
         selected = media;
     }
 
-    function confirm() {
-        const resp = {
-            img: selected
-        };
+    /**
+     * @param {Event} event
+     */
+    function confirm(event) {
+        event.preventDefault();
 
-        dispatch('selectimg', resp);
+        onselectimg(selected);
     }
 
+    /**
+     * @param {Event} event
+     */
     function cancel(event) {
+        event.preventDefault();
+
         if(event.currentTarget !== event.target) return;
 
-        dispatch('selectimg', {});
+        onselectimg(null);
     }
 
     onMount(() => {
+        updateEntries();
+
         const { body } = document;
+
         body.classList.add('contain-scroll');
 
         return () => {
@@ -42,18 +60,17 @@
     });
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<dialog open on:click={cancel}>
+
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<dialog open onclick={cancel}>
     <article>
         <header>Select Image</header>
 
         <div class="images">
             {#each mediaFiles as media (media.name)}
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <div class="img-container" class:selected={selected === media}
-                    on:click={() => select(media)}>
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div class="img-container" class:selected={selected === media} onclick={() => select(media)}>
                     <img src={media.url_preview} alt="" loading="lazy" crossorigin="use-credentials" />
                     <small>{media.name}</small>
                 </div>
@@ -61,8 +78,8 @@
         </div>
 
         <footer>
-            <button class="secondary" on:click|preventDefault={cancel}>Cancel</button>
-            <button disabled={!selected} on:click|preventDefault={confirm}>Select</button>
+            <button class="secondary" onclick={cancel}>Cancel</button>
+            <button disabled={!selected} onclick={confirm}>Select</button>
         </footer>
     </article>
 </dialog>

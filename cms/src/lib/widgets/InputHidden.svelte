@@ -3,9 +3,19 @@
     import { onMount } from 'svelte';
     import { formatDateTimeValue } from '$lib/util';
 
-    export let name;
-    export let type = 'text';
-    export let value;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} type
+     * @property {String} value
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        type,
+        value,
+    } = $props();
 
     function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the store object

@@ -1,8 +1,14 @@
 <script>
     import alert from '$assets/alert.svg?raw';
 
-    export let msg;
-    export let details;
+    /**
+     * @typedef {Object} Props
+     * @property {String} msg
+     * @property {String} details
+     */
+
+    /** @type {Props} */
+    let { msg, details } = $props();
 </script>
 
 <div class="toast warning">

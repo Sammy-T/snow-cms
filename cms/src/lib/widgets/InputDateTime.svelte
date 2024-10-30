@@ -3,11 +3,23 @@
     import { onMount } from 'svelte';
     import { formatDateTimeValue } from '$util';
 
-    export let name;
-    export let label;
-    export let type = 'datetime-local';
-    export let value = formatDateTimeValue(type, new Date());
-    export let required = true;
+    /**
+     * @typedef {Object} Props
+     * @property {String} name
+     * @property {String} label
+     * @property {String} type
+     * @property {String} value
+     * @property {Boolean} required
+     */
+
+    /** @type {Props} */
+    let {
+        name,
+        label,
+        type = 'datetime-local',
+        value = formatDateTimeValue(type, new Date()),
+        required = true,
+    } = $props();
 
     function updateDraft() {
         const draft = { ...$draftEntry }; // Copy the store object
@@ -35,10 +47,10 @@
     {label}
 
     {#if type === 'time'}
-        <input type="time" id={name} {name} bind:value on:input={updateDraft} {required} />
+        <input type="time" id={name} {name} bind:value oninput={updateDraft} {required} />
     {:else if type === 'date'}
-        <input type="date" id={name} {name} bind:value on:input={updateDraft} {required} />
+        <input type="date" id={name} {name} bind:value oninput={updateDraft} {required} />
     {:else}
-        <input type="datetime-local" id={name} {name} bind:value on:input={updateDraft} {required} />
+        <input type="datetime-local" id={name} {name} bind:value oninput={updateDraft} {required} />
     {/if}
 </label>

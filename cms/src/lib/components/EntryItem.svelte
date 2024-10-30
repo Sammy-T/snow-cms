@@ -3,14 +3,24 @@
     import { getContext } from 'svelte';
     import dayjs from 'dayjs';
 
-    const selectedEntries = getContext('selectedEntries');
+    /**
+     * @typedef {Object} Props
+     * @property {Object} entry
+     */
 
-    export let entry;
+    /** @type {Props} */
+    let { entry } = $props();
 
     let entryStatus = (entry.fields.draft) ? 'draft' : 'published';
     let entryDate = dayjs(entry.fields.date).format('MM/DD/YY');
 
+    const selectedEntries = getContext('selectedEntries');
+
+    /**
+     * @param {Event} event
+     */
     function onCheckChanged(event) {
+        // @ts-ignore
         if(event.target.checked) {
             $selectedEntries = [...$selectedEntries, entry];
         } else {
@@ -18,16 +28,16 @@
         }
     }
 
-    function onItemClick(event) {
+    function onItemClick() {
         $draftEntry = {};
         $editingEntry = entry;
     }
 </script>
 
 <div class="item">
-    <input type="checkbox" name="entry-select" on:change={onCheckChanged} />
+    <input type="checkbox" name="entry-select" onchange={onCheckChanged} />
 
-    <a href="#/editor" class="entry-info" on:click={onItemClick}>
+    <a href="#/editor" class="entry-info" onclick={onItemClick}>
         <div class="entry-name">{entry.fields.title}</div>
         <div class="entry-status">{entryStatus}</div>
         <div class="entry-date">{entryDate}</div>

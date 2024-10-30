@@ -1,5 +1,11 @@
 <script>
-    export let msg = null;
+    /**
+     * @typedef {Object} Props
+     * @property {String} msg
+     */
+
+    /** @type {Props} */
+    let { msg } = $props();
 </script>
 
 <div class="toast">

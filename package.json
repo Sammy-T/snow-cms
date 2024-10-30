@@ -36,7 +36,7 @@
     "@milkdown/transformer": "^7.5.0",
     "@milkdown/utils": "^7.5.0",
     "@octokit/core": "^6.1.2",
-    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "browser-fs-access": "^0.35.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
@@ -46,7 +46,7 @@
     "pouchdb-adapter-idb": "^9.0.0",
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
-    "svelte": "^4.2.19",
+    "svelte": "^5.1.4",
     "vite": "^5.4.10"
   }
 }

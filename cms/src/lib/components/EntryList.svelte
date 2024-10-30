@@ -11,15 +11,24 @@
     const selectedEntries = writable([]);
     setContext('selectedEntries', selectedEntries);
     
-    let getFilesResp;
-    let deleteAction;
-    let entries = [];
-    
-    $: if($backend || $selectedCollection) updateEntries();
+    let getFilesResp = $state();
+    let deleteAction = $state();
+    let entries = $state([]);
+
+    let collectionName = $state();
+
+    $effect(() => {
+        if(collectionName !== $selectedCollection?.name) updateEntries();
+    });
 
     async function updateEntries() {
         try{
-            getFilesResp = $backend?.getFiles($selectedCollection?.name);
+            if(!$backend || !$selectedCollection.name) return;
+
+            collectionName = $selectedCollection.name;
+
+            getFilesResp = $backend.getFiles($selectedCollection.name);
+
             entries = await getFilesResp || [];
         } catch(error) {
             // There's already a catch and re-throw in the backend
@@ -55,11 +64,11 @@
         {$selectedCollection?.label || ''}
 
         <div id="listActions">
-            <button class="outline" disabled={$selectedEntries.length === 0} on:click={deleteFiles}>
+            <button class="outline" disabled={$selectedEntries.length === 0} onclick={deleteFiles}>
                 {@html trashCan}Delete
             </button>
 
-            <button on:click={newFile}>
+            <button onclick={newFile}>
                 {@html pencil}New
             </button>
         </div>
@@ -68,7 +77,7 @@
     {#if entries.length === 0}
         <div id="empty">
             <p>This collection has no entries.</p>
-            <button on:click={newFile}>{@html pencil}Create New Entry</button>
+            <button onclick={newFile}>{@html pencil}Create New Entry</button>
         </div>
     {:else}
         <div id="items">

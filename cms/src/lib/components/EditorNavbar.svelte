@@ -4,17 +4,25 @@
     import { getContext, onMount } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
-    let entryForm;
-    let draftChanged = false;
-
     const submitted = getContext('submitted');
 
-    $: if($editingEntry || $draftEntry) onDraft();
+    let entryForm = $state();
+    let draftChanged = $state(false);
+
+    let editing = $state($state.snapshot($editingEntry));
+    let draft = $state($state.snapshot($draftEntry));
+
+    $effect(() => {
+        if($editingEntry !== editing || $draftEntry !== draft) onDraft();
+    });
 
     async function onDraft() {
         if(!entryForm) return;
 
         draftChanged = !(await areEntriesEqual());
+
+        editing = $editingEntry;
+        draft = $draftEntry;
     }
 
     async function areEntriesEqual() {
@@ -71,7 +79,12 @@
         return true;
     }
 
-    function onBackNav() {
+    /**
+     * @param {Event} event
+     */
+    function onBackNav(event) {
+        event.preventDefault();
+
         history.back()
     }
 
@@ -84,7 +97,7 @@
     <ul>
         <li>
             <!-- Back Navigation -->
-            <a href="##back" on:click|preventDefault={onBackNav}>
+            <a href="##back" onclick={onBackNav}>
                 {@html ArrowLeft}
             </a>
         </li>
