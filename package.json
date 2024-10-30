@@ -46,7 +46,7 @@
     "pouchdb-adapter-idb": "^9.0.0",
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
-    "svelte": "^5.1.4",
+    "svelte": "^5.1.5",
     "vite": "^5.4.10"
   }
 }
