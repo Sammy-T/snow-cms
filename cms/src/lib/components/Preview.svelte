@@ -16,11 +16,11 @@
 
     let iframe = $state();
 
-    let draft = $state($state.snapshot($draftEntry));
+    let draft = $state();
 
     $effect(() => {
         // Update content on draft entry changes
-        if($draftEntry !== draft) updateContent();
+        if(JSON.stringify($draftEntry) !== JSON.stringify(draft)) updateContent();
     });
 
     /**
@@ -70,7 +70,9 @@
     }
 
     onMount(async () => {
-        template = await loadTemplate($config, previewName)
+        template = await loadTemplate($config, previewName);
+
+        draft = $state.snapshot($draftEntry);
     });
 </script>
 

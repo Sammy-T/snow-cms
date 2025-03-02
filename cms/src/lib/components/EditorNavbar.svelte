@@ -10,10 +10,14 @@
     let draftChanged = $state(false);
 
     let editing = $state($state.snapshot($editingEntry));
-    let draft = $state($state.snapshot($draftEntry));
+    let draft = $state();
 
     $effect(() => {
-        if($editingEntry !== editing || $draftEntry !== draft) onDraft();
+        // Use JSON.stringify for simplified object comparison
+        const editingInequal = JSON.stringify($editingEntry) !== JSON.stringify(editing);
+        const draftInequal = JSON.stringify($draftEntry) !== JSON.stringify(draft);
+
+        if(editingInequal || draftInequal) onDraft();
     });
 
     async function onDraft() {
@@ -21,7 +25,7 @@
 
         if(!entryForm) return;
 
-        draftChanged = !(await areEntriesEqual());
+        draftChanged = !(await areEntriesEqual(entryForm));
 
         editing = $editingEntry;
         draft = $draftEntry;
@@ -91,6 +95,17 @@
     }
 
     onMount(() => {
+        // Wait for the Widget components to perform initial draft entry updates
+        // before creating an initial draft to compare changes to.
+        //
+        // This is the quick and dirty way that ABSOLUTELY will break should all the
+        // components somehow take longer than 1 second to perform initial updates but
+        // Svelte did some 'minor' updates which f*cked the simple method I had before.
+        //
+        //// TODO: Switch to an actual check.
+        setTimeout(() => {
+            draft = $state.snapshot($draftEntry);
+        }, 1000);
     });
 </script>
 
