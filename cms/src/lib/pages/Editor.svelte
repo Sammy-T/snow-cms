@@ -14,11 +14,14 @@
     import { setContext } from 'svelte';
     import { constructDoc, parseFormEntry } from '$lib/util';
 
-    const submitted = writable(null);
-    setContext('submitted', submitted);
-
     let parsing = $state();
     let saveAction = $state();
+
+    const formState = $state({ entryForm: null });
+    setContext('formState', formState);
+
+    const submitted = writable(null);
+    setContext('submitted', submitted);
 
     const editorInputs = {
         'string': InputText,
@@ -77,7 +80,7 @@
     <section id="inputArea">
         <header>Edit</header>
 
-        <form id="entry-data" onsubmit={onEntrySubmit}>
+        <form id="entry-data" bind:this={formState.entryForm} onsubmit={onEntrySubmit}>
             {#if $selectedCollection}
                 {#each $selectedCollection.fields as field (field.name)}
                     {@const Component = editorInputs[field.widget]}

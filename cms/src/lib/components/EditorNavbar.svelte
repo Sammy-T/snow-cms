@@ -4,9 +4,9 @@
     import { getContext, onMount } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
+    const formState = getContext('formState');
     const submitted = getContext('submitted');
 
-    let entryForm = $state();
     let draftChanged = $state(false);
 
     let editing = $state($state.snapshot($editingEntry));
@@ -17,6 +17,8 @@
     });
 
     async function onDraft() {
+        const { entryForm } = formState;
+
         if(!entryForm) return;
 
         draftChanged = !(await areEntriesEqual());
@@ -25,9 +27,9 @@
         draft = $draftEntry;
     }
 
-    async function areEntriesEqual() {
+    async function areEntriesEqual(entryForm) {
         if(!$editingEntry) return false;
-        
+
         const formData = new FormData(entryForm);
 
         for(const [key, value] of formData) {
@@ -89,7 +91,6 @@
     }
 
     onMount(() => {
-        entryForm = document.querySelector('#entry-data');
     });
 </script>
 

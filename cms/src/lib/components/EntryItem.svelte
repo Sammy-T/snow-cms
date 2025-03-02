@@ -37,7 +37,7 @@
 <div class="item">
     <input type="checkbox" name="entry-select" onchange={onCheckChanged} />
 
-    <a href="#/editor" class="entry-info" onclick={onItemClick}>
+    <a href="#editor" class="entry-info" onclick={onItemClick}>
         <div class="entry-name">{entry.fields.title}</div>
         <div class="entry-status">{entryStatus}</div>
         <div class="entry-date">{entryDate}</div>
