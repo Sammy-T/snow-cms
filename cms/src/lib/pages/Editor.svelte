@@ -9,16 +9,19 @@
     import Preview from '$lib/components/Preview.svelte';
     import Pending from '$lib/toasts/Pending.svelte';
     import Warning from '$lib/toasts/Warning.svelte';
-    import { selectedCollection, editingEntry, backend, cmsActions } from '$stores';
+    import { selectedCollection, editingEntry, backend, cmsActions, loadingWidgets, loadedWidgets } from '$stores';
     import { writable } from 'svelte/store';
-    import { setContext } from 'svelte';
+    import { onMount, setContext } from 'svelte';
     import { constructDoc, parseFormEntry } from '$lib/util';
-
-    const submitted = writable(null);
-    setContext('submitted', submitted);
 
     let parsing = $state();
     let saveAction = $state();
+
+    const formState = $state({ entryForm: null });
+    setContext('formState', formState);
+
+    const submitted = writable(null);
+    setContext('submitted', submitted);
 
     const editorInputs = {
         'string': InputText,
@@ -69,6 +72,11 @@
             console.warn('Issue saving post.', error);
         }
     }
+
+    onMount(() => {
+        $loadedWidgets = 0;
+        $loadingWidgets = $selectedCollection.fields.length;
+    });
 </script>
 
 <EditorNavbar />
@@ -77,7 +85,7 @@
     <section id="inputArea">
         <header>Edit</header>
 
-        <form id="entry-data" onsubmit={onEntrySubmit}>
+        <form id="entry-data" bind:this={formState.entryForm} onsubmit={onEntrySubmit}>
             {#if $selectedCollection}
                 {#each $selectedCollection.fields as field (field.name)}
                     {@const Component = editorInputs[field.widget]}

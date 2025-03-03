@@ -5,6 +5,9 @@ export const selectedCollection = writable();
 export const editingEntry = writable();
 export const draftEntry = writable({});
 
+export const loadingWidgets = writable(-1);
+export const loadedWidgets = writable(0);
+
 export const backend = writable();
 
 export const config = readable(null, set => {

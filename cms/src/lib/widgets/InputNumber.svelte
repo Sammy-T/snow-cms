@@ -1,5 +1,5 @@
 <script>
-    import { draftEntry, editingEntry } from '$stores';
+    import { draftEntry, editingEntry, loadedWidgets } from '$stores';
     import { onMount } from 'svelte';
 
     /**
@@ -38,6 +38,8 @@
         }
 
         updateDraft();
+
+        $loadedWidgets = $loadedWidgets + 1;
     }
 
     onMount(() => {
