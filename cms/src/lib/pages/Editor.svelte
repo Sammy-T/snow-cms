@@ -9,9 +9,9 @@
     import Preview from '$lib/components/Preview.svelte';
     import Pending from '$lib/toasts/Pending.svelte';
     import Warning from '$lib/toasts/Warning.svelte';
-    import { selectedCollection, editingEntry, backend, cmsActions } from '$stores';
+    import { selectedCollection, editingEntry, backend, cmsActions, loadingWidgets, loadedWidgets } from '$stores';
     import { writable } from 'svelte/store';
-    import { setContext } from 'svelte';
+    import { onMount, setContext } from 'svelte';
     import { constructDoc, parseFormEntry } from '$lib/util';
 
     let parsing = $state();
@@ -72,6 +72,11 @@
             console.warn('Issue saving post.', error);
         }
     }
+
+    onMount(() => {
+        $loadedWidgets = 0;
+        $loadingWidgets = $selectedCollection.fields.length;
+    });
 </script>
 
 <EditorNavbar />

@@ -1,7 +1,7 @@
 <script>
     import ArrowLeft from '$assets/arrow-left.svg?raw';
-    import { selectedCollection, editingEntry, draftEntry, backend } from '$stores';
-    import { getContext, onMount } from 'svelte';
+    import { selectedCollection, editingEntry, draftEntry, backend, loadedWidgets, loadingWidgets } from '$stores';
+    import { getContext } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
     const formState = getContext('formState');
@@ -11,6 +11,15 @@
 
     let editing = $state($state.snapshot($editingEntry));
     let draft = $state();
+
+    let draftInit = false;
+
+    $effect(() => {
+        if(!draftInit && $loadedWidgets === $loadingWidgets) {
+            draft = $state.snapshot($draftEntry);
+            draftInit = true;
+        }
+    });
 
     $effect(() => {
         // Use JSON.stringify for simplified object comparison
@@ -93,20 +102,6 @@
 
         history.back()
     }
-
-    onMount(() => {
-        // Wait for the Widget components to perform initial draft entry updates
-        // before creating an initial draft to compare changes to.
-        //
-        // This is the quick and dirty way that ABSOLUTELY will break should all the
-        // components somehow take longer than 1 second to perform initial updates but
-        // Svelte did some 'minor' updates which f*cked the simple method I had before.
-        //
-        //// TODO: Switch to an actual check.
-        setTimeout(() => {
-            draft = $state.snapshot($draftEntry);
-        }, 1000);
-    });
 </script>
 
 <nav>

@@ -1,5 +1,5 @@
 <script>
-    import { config, selectedCollection, draftEntry } from '$stores';
+    import { config, selectedCollection, draftEntry, loadedWidgets, loadingWidgets } from '$stores';
     import { getStyles, loadTemplate, replaceTags } from '$util';
     import { onMount } from 'svelte';
     import dayjs from 'dayjs';
@@ -17,6 +17,15 @@
     let iframe = $state();
 
     let draft = $state();
+
+    let draftInit = false;
+
+    $effect(() => {
+        if(!draftInit && $loadedWidgets === $loadingWidgets) {
+            draft = $state.snapshot($draftEntry);
+            draftInit = true;
+        }
+    });
 
     $effect(() => {
         // Update content on draft entry changes
@@ -71,8 +80,6 @@
 
     onMount(async () => {
         template = await loadTemplate($config, previewName);
-
-        draft = $state.snapshot($draftEntry);
     });
 </script>
 
