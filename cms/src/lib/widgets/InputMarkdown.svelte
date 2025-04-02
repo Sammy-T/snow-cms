@@ -4,7 +4,7 @@
     import Pending from '$lib/toasts/Pending.svelte';
     import Warning from '$lib/toasts/Warning.svelte';
     import SelectImageModal from '$lib/modals/md-ext/SelectImageModal.svelte';
-    import { selectedCollection, draftEntry, editingEntry, backend } from '$stores';
+    import { selectedCollection, draftEntry, editingEntry, backend, loadedWidgets } from '$stores';
     import { onMount } from 'svelte';
 
     /**
@@ -281,6 +281,8 @@
         } catch(error) {
             // Already catching and re-throwing in the backend
         }
+
+        $loadedWidgets = $loadedWidgets + 1;
     }
 
     onMount(() => {

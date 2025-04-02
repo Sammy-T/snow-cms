@@ -1,33 +1,48 @@
 <script>
     import ArrowLeft from '$assets/arrow-left.svg?raw';
-    import { selectedCollection, editingEntry, draftEntry, backend } from '$stores';
-    import { getContext, onMount } from 'svelte';
+    import { selectedCollection, editingEntry, draftEntry, backend, loadedWidgets, loadingWidgets } from '$stores';
+    import { getContext } from 'svelte';
     import { parseFormEntry } from '$lib/util';
 
+    const formState = getContext('formState');
     const submitted = getContext('submitted');
 
-    let entryForm = $state();
     let draftChanged = $state(false);
 
     let editing = $state($state.snapshot($editingEntry));
-    let draft = $state($state.snapshot($draftEntry));
+    let draft = $state();
+
+    let draftInit = false;
 
     $effect(() => {
-        if($editingEntry !== editing || $draftEntry !== draft) onDraft();
+        if(!draftInit && $loadedWidgets === $loadingWidgets) {
+            draft = $state.snapshot($draftEntry);
+            draftInit = true;
+        }
+    });
+
+    $effect(() => {
+        // Use JSON.stringify for simplified object comparison
+        const editingInequal = JSON.stringify($editingEntry) !== JSON.stringify(editing);
+        const draftInequal = JSON.stringify($draftEntry) !== JSON.stringify(draft);
+
+        if(editingInequal || draftInequal) onDraft();
     });
 
     async function onDraft() {
+        const { entryForm } = formState;
+
         if(!entryForm) return;
 
-        draftChanged = !(await areEntriesEqual());
+        draftChanged = !(await areEntriesEqual(entryForm));
 
         editing = $editingEntry;
         draft = $draftEntry;
     }
 
-    async function areEntriesEqual() {
+    async function areEntriesEqual(entryForm) {
         if(!$editingEntry) return false;
-        
+
         const formData = new FormData(entryForm);
 
         for(const [key, value] of formData) {
@@ -87,10 +102,6 @@
 
         history.back()
     }
-
-    onMount(() => {
-        entryForm = document.querySelector('#entry-data');
-    });
 </script>
 
 <nav>
