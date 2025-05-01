@@ -37,7 +37,7 @@
     "@milkdown/utils": "^7.7.0",
     "@octokit/core": "^6.1.4",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "browser-fs-access": "^0.35.0",
+    "browser-fs-access": "^0.37.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "events": "^3.3.0",
