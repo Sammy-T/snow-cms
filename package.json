@@ -27,14 +27,8 @@
     "@picocss/pico": "^2.1.1"
   },
   "devDependencies": {
-    "@milkdown/core": "^7.9.0",
-    "@milkdown/ctx": "^7.9.0",
-    "@milkdown/plugin-listener": "^7.9.0",
-    "@milkdown/preset-commonmark": "^7.9.0",
-    "@milkdown/prose": "^7.9.0",
-    "@milkdown/theme-nord": "^7.9.0",
-    "@milkdown/transformer": "^7.9.0",
-    "@milkdown/utils": "^7.9.0",
+    "@milkdown/kit": "^7.15.2",
+    "@milkdown/theme-nord": "^7.15.2",
     "@octokit/core": "^7.0.2",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "browser-fs-access": "^0.38.0",
