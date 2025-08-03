@@ -25,6 +25,9 @@ export default defineConfig({
                 entryFileNames: '[name].js',
                 assetFileNames: '[name][extname]',
                 chunkFileNames: '[name].js',
+                manualChunks: {
+                    milkdown: ['@milkdown/kit', '@milkdown/theme-nord']
+                }
             }
         }
     }
