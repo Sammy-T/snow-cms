@@ -41,7 +41,7 @@
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
     "svelte": "^5.28.2",
-    "vite": "^6.3.4"
+    "vite": "^7.1.12"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
