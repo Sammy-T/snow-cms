@@ -20,15 +20,20 @@ export default defineConfig({
         emptyOutDir: true,
         modulePreload: false,
         // sourcemap: true,
-        rollupOptions: {
+        rolldownOptions: {
             output: {
                 entryFileNames: '[name].js',
                 assetFileNames: '[name][extname]',
                 chunkFileNames: '[name].js',
-                manualChunks: {
-                    milkdown: ['@milkdown/kit', '@milkdown/theme-nord']
-                }
-            }
-        }
-    }
+                codeSplitting: {
+                    groups: [
+                        {
+                            test: /node_modules\/@milkdown/,
+                            name: 'milkdown',
+                        }
+                    ],
+                },
+            },
+        },
+    },
 })
