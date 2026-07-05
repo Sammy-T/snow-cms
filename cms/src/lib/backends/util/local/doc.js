@@ -1,5 +1,5 @@
 import { getContents } from '$lib/util';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 
 /**
  * Constructs a PouchDB compatible doc.
@@ -17,7 +17,7 @@ export async function constructDocFromFile(collectionName, file) {
     }
 
     const [frontMatter, body] = getContents(raw);
-    const fields = yaml.load(frontMatter);
+    const fields = load(frontMatter);
 
     const doc = {
         _id: file.webkitRelativePath,

@@ -1,5 +1,5 @@
 import { writable, readable, derived } from 'svelte/store';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 
 export const selectedCollection = writable();
 export const editingEntry = writable();
@@ -35,7 +35,7 @@ async function loadConfig() {
     const res = await fetch(configUrl);
     if(!res.ok) throw new Error(`Unable to fetch file ${configUrl}`);
 
-    const loaded = yaml.load(await res.text());
+    const loaded = load(await res.text());
 
     return loaded;
 }

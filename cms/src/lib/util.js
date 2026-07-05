@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { fileOpen } from 'browser-fs-access';
-import yaml from 'js-yaml';
+import { dump } from 'js-yaml';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -212,7 +212,7 @@ export function constructDoc(collection, entryData) {
     const { date, body } = { ...doc.fields };
     delete doc.fields.body; // Remove the body from the fields data
 
-    const frontMatter = yaml.dump(doc.fields, { quotingType: `"`, forceQuotes: true });
+    const frontMatter = dump(doc.fields, { quotingType: `"`, forceQuotes: true });
 
     doc.date = date;
     doc.body = body;

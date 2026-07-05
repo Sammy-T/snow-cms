@@ -1,7 +1,7 @@
 import { getContents } from '$lib/util';
 import { base64ToBlob, getMimeTypeFromExt } from '../blob';
 import { getRepoFileBlob } from './request';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 
 /**
  * Constructs a doc.
@@ -13,7 +13,7 @@ export function constructDocFromGitHub(collectionName, folder, entry) {
     const { id, text } = entry.object;
 
     const [frontMatter, body] = getContents(text);
-    const fields = yaml.load(frontMatter);
+    const fields = load(frontMatter);
 
     const doc = {
         _id: id,
