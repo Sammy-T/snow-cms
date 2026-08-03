@@ -27,20 +27,20 @@
     "@picocss/pico": "^2.1.1"
   },
   "devDependencies": {
-    "@milkdown/kit": "^7.21.2",
-    "@milkdown/theme-nord": "^7.21.2",
-    "@octokit/core": "^7.0.6",
-    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@milkdown/kit": "^7.21.3",
+    "@milkdown/theme-nord": "^7.21.3",
+    "@octokit/core": "^7.0.7",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
     "browser-fs-access": "^0.38.0",
     "dayjs": "^1.11.21",
     "dotenv": "^17.4.2",
     "events": "^3.3.0",
-    "js-yaml": "^5.2.1",
+    "js-yaml": "^5.2.3",
     "npm-run-all": "^4.1.5",
     "pouchdb-adapter-idb": "^9.0.0",
     "pouchdb-core": "^9.0.0",
     "pouchdb-find": "^9.0.0",
-    "svelte": "^5.56.1",
-    "vite": "^8.0.16"
+    "svelte": "^5.56.8",
+    "vite": "^8.2.0"
   }
 }
